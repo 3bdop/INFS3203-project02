@@ -4,6 +4,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Main from './components/Main'
+import LoginScreen from './components/LoginScreen'
 const Stack = createNativeStackNavigator()
 const Tab = createBottomTabNavigator();
 
@@ -12,6 +13,7 @@ export default function App() {
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Main">
         <Stack.Screen name='Main' component={Main} options={{ headerShown: false }} />
+        <Stack.screen name='LoginScreen' component={LoginScreen} options={{ headerShown: false}} />
       </Stack.Navigator>
     </NavigationContainer>
   );
