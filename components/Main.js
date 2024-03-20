@@ -50,7 +50,7 @@ export default function Main({ navigation }) {
               containerStyle={{
                 width: screenWidth * .75,
               }}
-              onPress={() => navigation.navigate('Register')}
+              onPress={() => navigation.navigate('RegistarScreen')}
             />
           </View>
         </View>
