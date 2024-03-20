@@ -30,7 +30,7 @@ export default function LoginScreen({ navigation }) {
       .then(() => {
         console.log('Logged in')
         setSignedIn(true)
-        navigation.replace('Feed', { email: email })
+        navigation.replace('MainTabs', { email: email })
       })
       .catch((error) => {
         console.log(error.message);
@@ -155,7 +155,7 @@ export default function LoginScreen({ navigation }) {
 
         <View style={{ justifyContent: "center", alignItems: "center", flexDirection: "row", marginBottom: screenHeight * 0.03 }}>
           <Text>Don't have an account? </Text>
-          <TouchableOpacity onPress={() => navigation.navigate('Register')}><Text style={{ fontWeight: "bold" }}>Sign Up</Text></TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate('RegistarScreen')}><Text style={{ fontWeight: "bold" }}>Sign Up</Text></TouchableOpacity>
         </View>
 
 
