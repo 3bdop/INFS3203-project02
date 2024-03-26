@@ -11,6 +11,7 @@ import Register from "./components/RegistarScreen";
 import Home from "./components/Home";
 import { TabBarIOS } from "react-native";
 const Stack = createNativeStackNavigator();
+
 const Tab = createBottomTabNavigator();
 function Feed({ navigation, route }) {
   const email = route.params.email;
@@ -66,6 +67,7 @@ export default function App() {
         />
       </Stack.Navigator>
     </NavigationContainer>
+
   );
 }
 
