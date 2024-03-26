@@ -1,21 +1,25 @@
 import React, { useState, useEffect } from 'react';
-import { ScrollView, TextInput, SafeAreaView, StyleSheet, Dimensions, Text, View, TouchableOpacity } from 'react-native';
-import { AntDesign, Entypo } from 'react-native-vector-icons';
+import { ScrollView, TextInput, SafeAreaView, StyleSheet, Dimensions, Text, View, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { Image, Input, Button, Card, Divider, Avatar } from '@rneui/themed';
+import { Feather } from 'react-native-vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Avatar, Card } from "@rneui/themed";
 import * as ImagePicker from 'expo-image-picker';
-
+import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage'
+import { doc, updateDoc } from "firebase/firestore";
+import { auth, db, storage } from "./config";
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
 
 
-const EditProfile = ( {navigation} ) => {
-
-    const [image, setImage] = useState(null)
-
+const EditProfile = ({ navigation, route }) => {
+    const { email, userData } = route.params
+    const [image, setImage] = useState(userData.pic)
+    const [newName, setNewName] = useState(userData.name)
+    const [isLoading, setIsLoading] = useState(false)
     const pickImage = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.All,
+            allowsEditing: true
         });
         if (!result.canceled && result.assets) {
             const uri = result.assets[0].uri;
@@ -23,69 +27,153 @@ const EditProfile = ( {navigation} ) => {
         }
     }
 
-  return (
-    <SafeAreaView style={styles.container}>
+    const uploadImage = async (docId) => {
+        if (!image || !docId) return null; // Check if there's an image and a document ID
 
-        <ScrollView>
+        const imgRef = ref(storage, `profile_pictures/${docId}`);
 
-        
-        <View style={styles.avatarContainer}>
-            <Avatar size={'xlarge'}rounded source={image ? {uri:image} : require('../assets/user.jpg')}/>
-        </View>
+        try {
+            const imgResponse = await fetch(image);
+            const imgBlob = await imgResponse.blob();
 
-        {/* Change Pic Botton Container */}
-        <View style={styles.changePicBottonContainer}>
+            // Upload the image
+            await uploadBytesResumable(imgRef, imgBlob);
 
-            <TouchableOpacity style={styles.changePicButton} onPress={pickImage}>
-                <Text style={styles.changePicTxt}>Change Picture</Text>
-            </TouchableOpacity>
+            // Once uploaded, get the download URL
+            const downloadURL = await getDownloadURL(imgRef);
 
-        </View>
+            console.log('Image uploaded successfully. Download URL:', downloadURL);
 
-        {/* User Info */}
-        <View style={styles.userInfo}>
+            return downloadURL; // Return the download URL
+        } catch (error) {
+            console.error("Error uploading image: ", error);
+            return null; // Return null in case of error
+        }
+    };
+    const store = async () => {
+        try {
+            // Get a reference to the document with the email ID
+            const docRef = doc(db, "users", email);
 
-            {/* Name */}
-            <View style={styles.userInfoHeaderContainer}>
-                <Text style={styles.headerTxt}>Name</Text>
-            </View>
-            <View style={styles.inputContainer}>
-                <TextInput placeholder='Mohamed' style={styles.input}/> 
-            </View>
+            // Upload the image and get the URL
+            const imageUrl = await uploadImage(email);
 
-            {/* Email ID */}
-            <View style={styles.userInfoHeaderContainer}>
-                <Text style={styles.headerTxt}>Email ID</Text>
-            </View>
-            <View style={styles.inputContainer}>
-                <TextInput inputMode='email' placeholder='Exampl@hotmail.com' style={styles.input}/>
-            </View>
-        </View>
+            // Update the document with the new name and image
+            await updateDoc(docRef, { name: newName, pic: imageUrl });
 
-         {/* Update Button */}
-         <View style={styles.UpdateButtonContainer}>
-            <TouchableOpacity style={styles.UpdateButton}>
-                <Text style={styles.UpdateTxt}>Update</Text>
-            </TouchableOpacity>
-        </View>
-        
-        
-        </ScrollView>
-    </SafeAreaView>
-  )
+            console.log("Document updated with ID: ", email);
+        } catch (error) {
+            console.error("Error adding document: ", error);
+        }
+
+    };
+
+    const handleAll = async () => {
+        setIsLoading(true)
+        const tempID = await store()
+        setIsLoading(false)
+        navigation.navigate("Home")
+    }
+    return (
+        <SafeAreaView style={styles.container}>
+
+            <ScrollView>
+
+
+                <View style={styles.avatarContainer}>
+                    <Avatar size={'xlarge'} rounded source={image ? { uri: image } : { uri: userData.pic }} />
+                </View>
+
+                {/* Change Pic Botton Container */}
+                <View style={styles.changePicBottonContainer}>
+
+                    <TouchableOpacity style={styles.changePicButton} onPress={pickImage}>
+                        <Text style={styles.changePicTxt}>Change Picture</Text>
+                    </TouchableOpacity>
+
+                </View>
+
+                {/* User Info */}
+                <View style={styles.userInfo}>
+
+                    {/* Name */}
+                    <View style={styles.inputContainer}>
+                        <Input
+                            autoCapitalize='none'
+                            value={newName}
+                            placeholder={userData.name}
+                            onChangeText={(txt) => setNewName(txt)}
+                            label="Name:"
+                            rightIcon={
+                                <Feather
+                                    name="user"
+                                    size={24}
+                                    color="black"
+                                />
+                            }
+                            labelStyle={{ color: "black", paddingBottom: screenWidth * 0.03, fontSize: 17, fontWeight: "400" }}
+                            inputContainerStyle={{
+                                borderWidth: 1,
+                                borderColor: 'black',
+                                borderRadius: 5,
+                                paddingHorizontal: 10,
+                            }}
+                            containerStyle={{
+                                paddingHorizontal: screenWidth * 0.02,
+                                width: screenWidth * 0.9,
+                            }}
+                        />
+                    </View>
+
+                    {/* Email ID */}
+
+                </View>
+
+                {/* Update Button */}
+                <View style={styles.UpdateButtonContainer}>
+                    <Button
+                        onPress={handleAll}
+                        title={
+                            isLoading ? (
+                                <ActivityIndicator size="small" color="#fff" />
+                            ) : (
+                                "Update"
+                            )
+                        }
+                        titleStyle={{ fontWeight: "bold" }}
+                        buttonStyle={{
+                            backgroundColor: "#6B8BE0",
+                            paddingVertical: screenWidth * 0.045,
+                        }}
+                        containerStyle={{
+                            width: screenWidth * 0.75,
+                            borderRadius: 10,
+                            // marginHorizontal: -1,
+                            marginVertical: screenWidth * 0.05,
+                        }}
+                    />
+                    {/* <TouchableOpacity style={styles.UpdateButton} onPress={handleAll}>
+                        <Text style={styles.UpdateTxt}>Update</Text>
+                    </TouchableOpacity> */}
+                </View>
+
+
+            </ScrollView>
+        </SafeAreaView>
+    )
 }
 
 export default EditProfile
 
 const styles = StyleSheet.create({
-    container:{
+    container: {
         backgroundColor: '#e6e6e6',
         flex: 1,
         alignItems: 'center'
     },
 
     // Avatar Container
-    avatarContainer:{
+    avatarContainer: {
         // backgroundColor: 'tomato',
         width: screenWidth,
         height: screenHeight * 0.23,
@@ -94,33 +182,33 @@ const styles = StyleSheet.create({
     },
 
     // Change Pic Button
-    changePicBottonContainer:{
+    changePicBottonContainer: {
         // backgroundColor: 'gray',
         width: screenWidth,
         height: screenHeight * 0.1,
         justifyContent: 'center',
         alignItems: 'center'
     },
-    changePicButton:{
-        backgroundColor: '#2F7694',
+    changePicButton: {
+        backgroundColor: '#6B8BE0',
         width: '45%',
         height: '50%',
         borderRadius: 20,
         justifyContent: 'center',
         alignItems: 'center',
     },
-    changePicTxt:{
+    changePicTxt: {
         color: 'white'
     },
 
     // User Information
-    userInfo:{
+    userInfo: {
         // backgroundColor: 'pink',
         width: screenWidth,
         height: screenHeight * 0.4,
 
     },
-    userInfoHeaderContainer:{
+    userInfoHeaderContainer: {
         // backgroundColor: 'gray',
         width: '100%',
         // height: '8%',
@@ -128,16 +216,16 @@ const styles = StyleSheet.create({
         paddingLeft: 20,
         justifyContent: 'center'
     },
-    headerTxt:{
+    headerTxt: {
         fontSize: 17,
         paddingBottom: 5
     },
-    inputContainer:{
+    inputContainer: {
         // backgroundColor: 'yellow',
         height: '15%',
         paddingLeft: 20,
     },
-    input:{
+    input: {
         width: '90%',
         height: '85%',
         backgroundColor: 'white',
@@ -148,24 +236,24 @@ const styles = StyleSheet.create({
     },
 
     // Sign Up Button
-    UpdateButtonContainer:{
+    UpdateButtonContainer: {
         // backgroundColor: 'lightgray',
-        width: screenWidth,
-        height: screenHeight * 0.1,
+        // width: screenWidth,
+        // height: screenHeight * 0.5,
         justifyContent: 'center',
         alignItems: 'center'
     },
 
     // Update Button
-    UpdateButton:{
+    UpdateButton: {
         width: '80%',
         height: '60%',
-        backgroundColor: '#2F7694',
+        backgroundColor: '#6B8BE0',
         borderRadius: 15,
         justifyContent: 'center',
         alignItems: 'center'
     },
-    UpdateTxt:{
+    UpdateTxt: {
         fontSize: 16,
         fontWeight: 'bold',
         color: 'white'

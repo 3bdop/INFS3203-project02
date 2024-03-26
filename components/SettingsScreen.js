@@ -1,62 +1,92 @@
-import {StyleSheet,Dimensions, Image,Text, View, TouchableOpacity, Platform, TextInput,ScrollView, SafeAreaView } from 'react-native';
-import React from 'react'
+import { StyleSheet, Dimensions, Image, Text, View, TouchableOpacity, Platform, TextInput, ScrollView, SafeAreaView } from 'react-native';
+import React, { useState, useEffect } from 'react'
 import { Feather, MaterialIcons } from 'react-native-vector-icons'
 import { Avatar, Card } from '@rneui/themed';
 import { CardDivider } from '@rneui/base/dist/Card/Card.Divider';
-
+import {
+    addDoc,
+    collection,
+    getDoc,
+    getDocs,
+    setDoc,
+    query,
+    where,
+    doc,
+} from "firebase/firestore";
+import { db } from "./config";
 const screenWidth = Dimensions.get('window').width
 const screenHeight = Dimensions.get('window').height
 
-const Settings = ({navigation, route}) => {
+const Settings = ({ navigation, route }) => {
     const { email } = route.params;
-  return (
-      <SafeAreaView style={styles.container}>
+    const [userData, setUserData] = useState(null);
 
-        <ScrollView>
+    useEffect(() => {
+        const fetchUserData = async () => {
+            try {
+                const docRef = doc(db, "users", email);
+                const docSnap = await getDoc(docRef);
+                if (docSnap.exists()) {
+                    console.log("Document data:");
+                    setUserData(docSnap.data());
+                } else {
+                    console.log("No such document!");
+                }
+            } catch (error) {
+                console.log(error.message);
+            }
+        };
 
-        <View style={styles.accountContainer}>
-        {/* Header */}
-        <View style={styles.header}>
-            <Text style={styles.headerTxt}>Account</Text>
-        </View>
+        fetchUserData();
+    }, []);
+    return (
+        <SafeAreaView style={styles.container}>
 
-        {/* Support & About options */}
-        <Card containerStyle={[styles.CardContainer, {height: screenHeight * 0.13}]}>
+            <ScrollView>
 
-            {/* Edit Profile */}
-            <TouchableOpacity style={[styles.options, {height: '45%'}]} onPress={() => navigation.navigate('EditProfile', { email: email })}>
-                <Feather name={'user'} size={25} color={'#818181'}/>
-                <Text style={styles.txt}>Edit Profile</Text>
-            </TouchableOpacity>
+                <View style={styles.accountContainer}>
+                    {/* Header */}
+                    <View style={styles.header}>
+                        <Text style={styles.headerTxt}>Account</Text>
+                    </View>
 
-            <CardDivider/>
+                    {/* Support & About options */}
+                    <Card containerStyle={[styles.CardContainer, { height: screenHeight * 0.13 }]}>
 
-            {/* Log Out */}
-            <TouchableOpacity onPress={()=>navigation.replace('Main')} style={[styles.options, {height: '40%'}]}>
-                <MaterialIcons name={'logout'} size={25} color={'#818181'}/>
-                <Text style={styles.txt}>Log Out</Text>
-            </TouchableOpacity>
+                        {/* Edit Profile */}
+                        <TouchableOpacity style={[styles.options, { height: '45%' }]} onPress={() => navigation.navigate('EditProfile', { email: email, userData })}>
+                            <Feather name={'user'} size={25} color={'#818181'} />
+                            <Text style={styles.txt}>Edit Profile</Text>
+                        </TouchableOpacity>
 
-        </Card>
-        </View>
+                        <CardDivider />
 
-        </ScrollView>
-        
-    </SafeAreaView>
-  )
+                        {/* Log Out */}
+                        <TouchableOpacity onPress={() => navigation.replace('Main')} style={[styles.options, { height: '40%' }]}>
+                            <MaterialIcons name={'logout'} size={25} color={'#818181'} />
+                            <Text style={styles.txt}>Log Out</Text>
+                        </TouchableOpacity>
+
+                    </Card>
+                </View>
+
+            </ScrollView>
+
+        </SafeAreaView>
+    )
 }
 
 export default Settings
 
 const styles = StyleSheet.create({
-    container:{
+    container: {
         // flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: '#e6e6e6',
         flex: 1
     },
-    header:{
+    header: {
         width: screenWidth,
         height: screenHeight * 0.05,
         // backgroundColor: 'pink',
@@ -64,30 +94,30 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         paddingLeft: 20,
     },
-    headerTxt:{
+    headerTxt: {
         fontSize: 17,
         fontWeight: 'bold',
     },
-    accountContainer:{
+    accountContainer: {
         // backgroundColor: 'tomato',
         height: screenHeight * 0.32,
         justifyContent: 'center',
         alignItems: 'center',
         marginTop: 20,
     },
-    CardContainer:{
+    CardContainer: {
         width: screenWidth * 0.9,
         height: screenHeight * 0.23,
         backgroundColor: 'white',
         borderRadius: 7,
     },
-    options:{
+    options: {
         // backgroundColor: 'lightgray',
         height: '19%',
         flexDirection: 'row',
         alignItems: 'center',
     },
-    txt:{
+    txt: {
         fontWeight: 'bold',
         paddingLeft: 15,
 

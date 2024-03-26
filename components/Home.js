@@ -22,6 +22,7 @@ import {
   query,
   where,
   doc,
+  onSnapshot
 } from "firebase/firestore";
 import { db } from "./config";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -57,6 +58,7 @@ export default function HomeScreen({ navigation, route }) {
 
     fetchUserData();
   }, []);
+
   useEffect(() => {
     const fetchPetsWithOwners = async () => {
       try {
@@ -92,6 +94,24 @@ export default function HomeScreen({ navigation, route }) {
     fetchPetsWithOwners();
   }, []);
 
+  useEffect(() => {
+    const docRef = doc(db, "users", email);
+
+    const unsubscribe = onSnapshot(docRef, (doc) => {
+      if (doc.exists()) {
+        console.log("Current data:", doc.data());
+        setUserData(doc.data());
+      } else {
+        console.log("No such document!");
+      }
+    }, (error) => {
+      console.log("Error getting document:", error);
+    });
+
+    // Cleanup the listener when the component unmounts
+    return () => unsubscribe();
+  }, [email]); // Dependency array to re-run if email changes
+
   return (
     <SafeAreaView style={styles.container}>
       {!userData ? (
@@ -104,7 +124,7 @@ export default function HomeScreen({ navigation, route }) {
           <View style={styles.firstTopView}>
             <Text style={styles.topWelcomeText}>Welcome {userData.name} </Text>
             <TouchableOpacity
-              onPress={() => navigation.navigate('EditProfile', { email: email })}
+              onPress={() => navigation.navigate('EditProfile', { email: email, userData: userData })}
               style={{
                 width: 50,
                 height: 50,
