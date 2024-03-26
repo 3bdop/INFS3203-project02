@@ -37,6 +37,34 @@ const Category = ({ active, setActive }) => {
           Categories
         </Text>
       </View>
+      <TouchableOpacity
+        onPress={() => setActive("")}
+        style={[
+          styles.animalCategoryCard,
+          {
+            backgroundColor: active == "" ? "#6B8BE0" : "snow",
+            alignSelf: "flex-end",
+          },
+        ]}
+      >
+        <View
+          style={{
+            flex: 1,
+            justifyContent: "center",
+            alignItems: "center",
+            padding: 10,
+          }}
+        >
+          <Text
+            style={[
+              styles.animalCardFontSize,
+              { color: active == "" ? "white" : "grey", alignSelf: "flex-end" },
+            ]}
+          >
+            View All
+          </Text>
+        </View>
+      </TouchableOpacity>
       <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
         <TouchableOpacity
           onPress={() => setActive("dog")}
@@ -134,16 +162,6 @@ const Category = ({ active, setActive }) => {
             </Text>
           </View>
         </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => setActive("")}
-          style={[
-            styles.animalCategoryCard,
-            {
-              backgroundColor: active == 3 ? "#6B8BE0" : "snow",
-              flexDirection: "row",
-            },
-          ]}
-        ></TouchableOpacity>
       </ScrollView>
     </View>
   );
