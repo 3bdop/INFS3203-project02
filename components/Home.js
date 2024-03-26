@@ -1,302 +1,368 @@
-import {  StyleSheet, Dimensions, Image, Text, View, TouchableOpacity, Platform, TextInput, ScrollView, SafeAreaView,} from 'react-native'
-import React , {useEffect, useState} from 'react'
-import { AntDesign, MaterialIcons, MaterialCommunityIcons } from "react-native-vector-icons";
-import { Avatar, Button, Card } from "@rneui/themed";
-
+import {
+  View,
+  StyleSheet,
+  Dimensions,
+  ActivityIndicator,
+  TouchableOpacity,
+  Modal,
+  Platform,
+  ScrollView,
+  TextInput,
+} from "react-native";
+import { Image, Input, Button, Card, Divider, SearchBar } from "@rneui/themed";
+import Category from "./Category";
+import React from "react";
+import { Tab, Text, TabView } from "@rneui/themed";
+import {
+  addDoc,
+  collection,
+  getDoc,
+  getDocs,
+  setDoc,
+  query,
+  where,
+  doc,
+} from "firebase/firestore";
+import { db } from "./config";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { useState, useEffect } from "react";
 const screenWidth = Dimensions.get("window").width;
 const screenHeight = Dimensions.get("window").height;
 
-import AnimalCard from './AnimalCard';
-import Category from './Category';
+export default function HomeScreen({ navigation, route }) {
+  const [pets, setPets] = useState([]);
+  const [userData, setUserData] = useState(null);
+  const { email } = route.params;
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [search, setSerach] = useState("");
+  const [active, setActive] = useState("");
+  const [petsWithOwners, setPetsWithOwners] = useState([]);
 
-const Home = ( {navigation} ) => {
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const docRef = doc(db, "users", email);
+        // const docRef = doc(db, "users", "test@g.com");
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          console.log("Document data:");
+          setUserData(docSnap.data());
+        } else {
+          console.log("No such document!");
+        }
+      } catch (error) {
+        console.log(error.message);
+      }
+    };
 
-    const [categories, SetCategories] = useState([
-        {name: 'Dog', image: require('../assets/dog_category.jpeg')},
-        {name: 'Cat', image: require('../assets/cat_category.jpg')},
-        {name: 'Bird', image: require('../assets/bird_category.jpeg')},
-    ])
+    fetchUserData();
+  }, []);
+  useEffect(() => {
+    const fetchPetsWithOwners = async () => {
+      try {
+        const petsCollection = collection(db, "pets");
+        const petsSnapshot = await getDocs(petsCollection);
 
-    const [animals, setAnimals] = useState(
-        [{
-          name: "Oscar",
-          category: "bird",
-          age: "1 year old",
-          gender: "Male",
-          weight: "1 kg",
-          about: "Intelligent and social, birds make fascinating pets with their ability to learn tricks and sometimes even mimic human speech.",
-          image: require('../assets/bird1.jpeg')
-        },
-        {
-          name: "Bella",
-          category: "cat",
-          age: "8 months old",
-          gender: "Female",
-          weight: "2 kg",
-          about: "Social and adaptable, Cats are known for their distinctive quacking and can make surprisingly affectionate pets.",
-          image: require('../assets/cat1.jpg')
-        },
-        {
-          name: "Nina",
-          category: "dog",
-          age: "2 years old",
-          gender: "Female",
-          weight: "7.23 kg",
-          about: "Intelligent and social, dogs make fascinating pets with their ability to learn tricks and sometimes even mimic human speech.",
-          image: require('../assets/dog1.jpeg')
-        },
-        {
-          name: "Charlie",
-          category: "cat",
-          age: "3 years old",
-          gender: "Female",
-          weight: "5 kg",
-          about: "Intelligent and social, cats make fascinating pets with their ability to learn tricks and sometimes even mimic human speech.",
-          image: require('../assets/cat2.jpeg')
-        },
-        {
-          name: "Lola",
-          category: "bird",
-          age: "7 months old",
-          gender: "Male",
-          weight: "3 kg",
-          about: "Social and adaptable, birds are known for their distinctive quacking and can make surprisingly affectionate pets.",
-          image: require('../assets/bird2.jpeg')
-        },
-        {
-          name: "Lucy",
-          category: "dog",
-          age: "7 years old",
-          gender: "Female",
-          weight: "20 kg",
-          about: "Loyal and friendly, dogs are known for their companionship and ability to bond with humans.",
-          image: require('../assets/dog2.jpeg')
-        }]
-    )
+        const petsWithOwnersData = [];
+        for (const petDoc of petsSnapshot.docs) {
+          const petData = petDoc.data();
+          const ownerEmail = petData.posted_by;
 
-    const [selectedCategory, setSelectedCategory] = useState(null);
+          // Fetch user details based on the owner's email
+          const userDocRef = doc(db, "users", ownerEmail);
+          const userDocSnapshot = await getDoc(userDocRef);
+          const userData = userDocSnapshot.data();
+
+          const petWithOwner = {
+            id: petDoc.id,
+            ...petData,
+            owner: userData, // Add owner details to the pet object
+          };
+
+          petsWithOwnersData.push(petWithOwner);
+          console.log(petWithOwner);
+        }
+
+        setPetsWithOwners(petsWithOwnersData);
+      } catch (error) {
+        console.error("Error fetching pets with owners:", error);
+      }
+    };
+
+    fetchPetsWithOwners();
+  }, []);
 
   return (
-<SafeAreaView style={styles.container}>
-        <ScrollView>
-        {/* Profile Header */}
-      <View style={styles.profileHeaderContainer}>
-
-         {/* Welcoming text */}
-         <View style={{flexDirection: 'row'}}>
-            <MaterialCommunityIcons name={'vector-square-plus'} size={23} style={{marginLeft: 15}}/>
-            <Text style={styles.welcomeTxt}>Welcome</Text>
-         </View>
-
-         {/* Profile pic */} 
-         <View style={{marginRight: 20}}>
-            <Avatar size={'medium'}rounded source={require('../assets/user.jpg')}/>
-         </View>
-
-      </View>
-
-
-        {/* Search Bar Section*/}
-        <View style={styles.searchBarContainer}>
-        <View style={styles.inputIconContainer}>
-          <TouchableOpacity>
-          <AntDesign name="search1" size={20} color={"#BABABA"} style={styles.searchIcon}/>
-          </TouchableOpacity>
-          <TextInput placeholder="Search here..." style={styles.searchBox}/>
-        </View>
-      </View>
-
-        {/* Donation Card Section*/}
-        <View style={styles.donationCardContainer}>
-
-            <View style={styles.donationCard}>
-                <View style={styles.captionContainer}>
-                    <Text style={styles.captionText}>Street pets needs protection</Text>
-                    <TouchableOpacity style={styles.donationBotton}>
-                        <Text style={styles.donateText}>Donate Now</Text>
-                    </TouchableOpacity>
-                </View>
-
-                <View style={styles.imageContainer}>
-                    <Image source={require('../assets/donation_cat.png')} style={styles.catImage}/>
-                </View>
+    <SafeAreaView style={styles.container}>
+      {!userData ? (
+        <ActivityIndicator
+          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+          size={"large"}
+        />
+      ) : (
+        <View style={{ flex: 1 }}>
+          <View style={styles.firstTopView}>
+            <Text style={styles.topWelcomeText}>Welcome {userData.name} </Text>
+            <TouchableOpacity
+              onPress={() => setIsModalVisible(true)}
+              style={{
+                width: 50,
+                height: 50,
+                marginRight: screenWidth * 0.04,
+                borderRadius: 30,
+              }}
+            >
+              <Image
+                style={{
+                  width: 50,
+                  height: 50,
+                  borderWidth: 1,
+                  marginRight: screenWidth * 0.04,
+                  borderRadius: 30,
+                }}
+                source={{ uri: userData.pic }}
+              />
+            </TouchableOpacity>
+          </View>
+          <View style={styles.seacrhView}>
+            <SearchBar
+              onChangeText={setSerach}
+              value={search}
+              autoCapitalize="none"
+              placeholder="Search here ..."
+              inputContainerStyle={{ backgroundColor: "snow" }}
+              containerStyle={{ backgroundColor: "snow" }}
+              platform="ios"
+              searchIcon={Platform.OS === "ios" ? { name: "search" } : null}
+              clearIcon={
+                Platform.OS === "ios" ? { name: "close-circle" } : null
+              }
+            />
+          </View>
+          <View style={styles.petOuterCar}>
+            <View
+              style={{
+                zIndex: 1,
+                alignItems: "center",
+                justifyContent: "center",
+                flex: 1,
+              }}
+            >
+              <Text
+                style={{
+                  fontSize: screenWidth * 0.05,
+                  fontWeight: "bold",
+                  height: "40%",
+                  marginRight: "42%",
+                  color: "white",
+                  marginTop: "2%",
+                }}
+              >
+                You don't need {"\n"}your pet?
+              </Text>
+              <TouchableOpacity style={styles.donate}>
+                <Text style={{ color: "#6B8BE0", fontWeight: "bold" }}>
+                  Find Home
+                </Text>
+              </TouchableOpacity>
             </View>
+            <View style={styles.catHomeCont}>
+              <Image
+                source={require("../assets/catHome.png")}
+                style={{
+                  marginLeft: 30,
+                  width: 135,
+                  height: screenWidth * 0.45,
+                }}
+              />
+            </View>
+          </View>
+
+          <Category active={active} setActive={setActive} />
+
+          {!petsWithOwners ? (
+            <View
+              style={{
+                flex: 1,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <ActivityIndicator style={{ color: "red" }} size={"large"} />
+            </View>
+          ) : (
+            <View>
+              <ScrollView
+                horizontal={true}
+                showsHorizontalScrollIndicator={false}
+              >
+                {petsWithOwners
+                  .filter(
+                    (item) =>
+                      item.name &&
+                      item.name.toLowerCase().includes(search.toLowerCase()) &&
+                      (!active ||
+                        item.category.toLowerCase() === active.toLowerCase())
+                  )
+                  .map((item, index) => (
+                    <View key={index} style={styles.cardStyle}>
+                      <TouchableOpacity
+                        onPress={() =>
+                          navigation.navigate("PetDetails", { item })
+                        }
+                      >
+                        <Card
+                          containerStyle={{ borderRadius: screenWidth * 0.03 }}
+                        >
+                          <View
+                            style={{
+                              alignItems: "center",
+                              borderRadius: screenWidth * 0.03,
+                              backgroundColor:
+                                index % 2 == 0 ? "#fcd9b9" : "#EBEDFE",
+                              marginBottom: "7%",
+                            }}
+                          >
+                            <Image
+                              style={{
+                                width: screenWidth * 0.3,
+                                height: screenWidth * 0.3,
+                                margin: "5%",
+                                resizeMode: "stretch",
+                                alignSelf: "center",
+                                borderRadius: screenWidth * 0.05,
+                              }}
+                              source={{ uri: item.image }}
+                            />
+                          </View>
+                          <Text
+                            style={{
+                              fontWeight: "bold",
+                              fontSize: screenWidth * 0.04,
+                              marginHorizontal: "-3%",
+                            }}
+                          >
+                            {" "}
+                            {item.name}
+                          </Text>
+                          <Text
+                            style={{
+                              color: "grey",
+                              fontSize: screenWidth * 0.03,
+                            }}
+                          >
+                            {item.age} old
+                          </Text>
+                        </Card>
+                      </TouchableOpacity>
+                    </View>
+                  ))}
+              </ScrollView>
+            </View>
+          )}
         </View>
-
-        {/* Catigories Section*/}
-        <View style={styles.categoriesHeader}>
-            <Text style={styles.categoriesText}>Categories</Text>
-        </View>
-
-        <View style={styles.categoryContainer}>
-
-            <ScrollView horizontal contentContainerStyle={styles.categoriesScrollContainer}>
-                {categories.map((category, index) => (
-                    <Category 
-                        key={index} 
-                        name={category.name} 
-                        image={category.image} 
-                        onPress={() => setSelectedCategory(category.name)}
-                        backgroundColor={selectedCategory === category.name ? '#9999ff' : 'white'}
-                        />
-                    ))}
-            </ScrollView>
-
-        </View>
-        
-        {/* Animal Card Section */}
-        <View style={styles.animalCardContainer}>
-
-            <ScrollView horizontal contentContainerStyle={{alignItems: 'center'}}>
-                {animals
-                .filter(animal => selectedCategory === null || animal.category.toLowerCase() === selectedCategory.toLowerCase())
-                .map((animal, index) => (
-                    <AnimalCard key={index} animal={animal} />
-            ))}
-            </ScrollView>
-
-        </View>
-        </ScrollView>
+      )}
     </SafeAreaView>
-  )
+  );
 }
 
-export default Home
-
 const styles = StyleSheet.create({
-    container:{
-        flex: 1,
-        backgroundColor: '#e6e6e6',
-        alignItems: 'center',
-        // justifyContent: 'center',
+  container: {
+    flex: 1,
+    backgroundColor: "snow",
+  },
+  topWelcomeText: {
+    fontSize: screenWidth * 0.07,
+    marginLeft: screenWidth * 0.04,
+    fontWeight: "bold",
+  },
+  firstTopView: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: screenHeight * 0.003,
+    alignItems: "center",
+  },
+  loadingScreen: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  seacrhView: {
+    paddingTop: 15,
+    width: screenWidth * 0.9,
+    justifyContent: "center",
+    alignItems: "center",
+    alignSelf: "center",
+  },
+  petOuterCar: {
+    marginTop: screenHeight * 0.03,
+    backgroundColor: "#6B8BE0",
+    width: screenWidth * 0.9,
+    borderRadius: screenWidth * 0.06,
+    alignSelf: "center",
+    height: screenHeight * 0.18,
+    flexDirection: "row",
+    justifyContent: "space-around",
+  },
+  outerCategory: {
+    width: screenWidth * 0.9,
+    backgroundColor: "#6B8BE0",
+    alignSelf: "center",
+    margin: 30,
+  },
+  donate: {
+    marginTop: "3%",
+    marginRight: "43%",
+    padding: 3,
+    width: "46%",
+    justifyContent: "center",
+    alignItems: "center",
+    height: "30%",
+    borderRadius: screenWidth * 0.02,
+    backgroundColor: "white",
+  },
+  catHomeCont: {
+    zIndex: 2,
+    flex: 1,
+    marginHorizontal: "-50%",
+    marginVertical: "-8%",
+    shadowColor: "#000000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
     },
-
-    // Profile Header
-    profileHeaderContainer:{
-        // backgroundColor: 'gray',
-        width: screenWidth,
-        height: screenHeight * 0.1,
-        // marginLeft: 25,
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center'
-    },
-    welcomeTxt:{
-        fontSize: 20,
-        fontWeight: 'bold',
-        marginLeft: 10
-    },
-
-    // Search Bar
-    searchBarContainer: {
-        // backgroundColor: 'pink',
-        width: screenWidth,
-        height: screenHeight * 0.1,
-        justifyContent: "center",
-        alignItems: "center",
-      },
-      inputIconContainer: {
-        flexDirection: "row",
-        alignItems: "center",
-        backgroundColor: "white",
-        width: screenWidth * 0.83,
-        borderRadius: 10,
-      },
-      searchIcon: {
-        marginLeft: 10,
-      },
-      searchBox: {
-        // backgroundColor: 'white',
-        width: screenWidth * 0.78,
-        height: screenHeight * 0.056,
-        borderRadius: 10,
-        paddingLeft: 10,
-    },
-
-    // Donation Card
-    donationCardContainer:{
-        // backgroundColor: 'tomato',
-        width: screenWidth,
-        height: screenHeight * 0.2,
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginTop: 15,
-    },
-    donationCard:{
-        backgroundColor: '#9999ff',
-        width: '90%',
-        height: '90%',
-        borderRadius: 20,
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center'
-    },
-    captionContainer:{
-        // backgroundColor: 'red',
-        width: '53%',
-        height: '80%',
-        justifyContent: 'center',
-    },
-    captionText:{
-        fontSize: 20,
-        color: 'white',
-        fontWeight: 'bold',
-        paddingLeft: 10,
-        marginBottom: 10
-    },
-    donationBotton:{
-        backgroundColor: 'white',
-        width: '70%',
-        height: '35%',
-        borderRadius: 10,
-        margin: 10,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    donateText:{
-        fontSize: 16,
-        color: '#6666ff'
-    },
-    imageContainer:{
-        // backgroundColor: 'pink',
-        width: '45%',
-        height: '80%',
-        justifyContent: 'flex-end',
-        alignItems: 'center'
-    },
-    catImage:{
-        width: screenWidth*0.23, 
-        height: screenHeight*0.2
-    },
-
-    // Categories
-    categoriesHeader:{
-        // backgroundColor: 'lightgray',
-        width: screenWidth,
-        height: screenHeight * 0.06,
-        justifyContent: 'center'
-    },
-    categoriesText:{
-        fontSize: 20,
-        fontWeight: 'bold',
-        marginLeft: 15,
-    },
-    categoryContainer:{
-        // backgroundColor: 'red',
-        width: screenWidth,
-        height: screenHeight * 0.1
-    },
-    categoriesScrollContainer:{
-        // backgroundColor: 'pink',
-        alignItems: 'center'
-    },
-
-    // Animal Section
-    animalCardContainer:{
-        // backgroundColor: 'tomato',
-        width: screenWidth,
-        height: screenHeight * 0.3,
-        alignItems: 'center',
-        flexDirection: 'row'
-    },
-})
+    shadowOpacity: 0.25,
+    shadowRadius: 5.84,
+    elevation: 5,
+  },
+  outerCategory: {
+    width: screenWidth * 0.9,
+    backgroundColor: "white",
+    alignSelf: "center",
+    margin: 30,
+  },
+  animalCategoryCard: {
+    width: 150,
+    height: 70,
+    backgroundColor: "grey",
+    borderRadius: 10,
+    marginRight: 10,
+    marginTop: 15,
+    alignItems: "center",
+  },
+  animalImageCard: {
+    width: 60,
+    height: 60,
+    borderRadius: 10,
+    marginLeft: 3,
+  },
+  animalCardFontSize: {
+    fontSize: screenWidth * 0.06,
+  },
+  cardStyle: {
+    width: screenWidth * 0.6,
+    backgroundColor: "snow",
+    flex: 1,
+    marginHorizontal: screenWidth * 0,
+  },
+});
