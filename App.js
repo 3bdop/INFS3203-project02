@@ -11,6 +11,7 @@ import Register from "./components/RegistarScreen";
 import Home from "./components/Home";
 import SettingsScreen from './components/SettingsScreen'
 import EditProfile from "./components/EditProfile";
+import PetDetails from "./components/PetDetails";
 
 import { TabBarIOS } from "react-native";
 const Stack = createNativeStackNavigator();
@@ -82,6 +83,11 @@ export default function App() {
         <Stack.Screen
           name="EditProfile"
           component={EditProfile}
+          options={{ headerShown: true, headerTransparent: true, headerBackTitle: 'Home' }}
+        />
+        <Stack.Screen
+          name="PetDetails"
+          component={PetDetails}
           options={{ headerShown: true, headerTransparent: true, headerBackTitle: 'Home' }}
         />
       </Stack.Navigator>
