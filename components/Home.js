@@ -41,8 +41,8 @@ export default function HomeScreen({ navigation, route }) {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        // const docRef = doc(db, "users", email);
-        const docRef = doc(db, "users", "test@g.com");
+        const docRef = doc(db, "users", email);
+        // const docRef = doc(db, "users", "test@g.com");
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
           console.log("Document data:");
@@ -178,7 +178,7 @@ export default function HomeScreen({ navigation, route }) {
             </View>
           </View>
 
-          <CategoriesScrollView active={active} setActive={setActive} />
+          <Category active={active} setActive={setActive} />
 
           {!petsWithOwners ? (
             <View

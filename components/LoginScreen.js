@@ -37,7 +37,7 @@ export default function LoginScreen({ navigation }) {
       .then(() => {
         console.log("Logged in");
         setSignedIn(true);
-        navigation.replace("MainTabs", { email: email });
+        navigation.replace("Feed", { email: email });
       })
       .catch((error) => {
         console.log(error.message);
