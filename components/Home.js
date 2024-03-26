@@ -104,7 +104,7 @@ export default function HomeScreen({ navigation, route }) {
           <View style={styles.firstTopView}>
             <Text style={styles.topWelcomeText}>Welcome {userData.name} </Text>
             <TouchableOpacity
-              onPress={() => setIsModalVisible(true)}
+              onPress={() => navigation.navigate('EditProfile', { email: email })}
               style={{
                 width: 50,
                 height: 50,
