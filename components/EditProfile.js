@@ -2,15 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { ScrollView, TextInput, SafeAreaView, StyleSheet, Dimensions, Text, View, TouchableOpacity } from 'react-native';
 import { AntDesign, Entypo } from 'react-native-vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Avatar, Image, Input, Button, Card, Divider } from "@rneui/themed";
+import { Avatar, Card } from "@rneui/themed";
 import * as ImagePicker from 'expo-image-picker';
 
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
 
 
-const EditProfile = ({ navigation }) => {
-    
+const EditProfile = ( {navigation} ) => {
+
     const [image, setImage] = useState(null)
 
     const pickImage = async () => {
@@ -23,95 +23,69 @@ const EditProfile = ({ navigation }) => {
         }
     }
 
-    return (
-        <SafeAreaView style={styles.container}>
+  return (
+    <SafeAreaView style={styles.container}>
 
-            <ScrollView>
+        <ScrollView>
 
+        
+        <View style={styles.avatarContainer}>
+            <Avatar size={'xlarge'}rounded source={image ? {uri:image} : require('../assets/user.jpg')}/>
+        </View>
 
-                <View style={styles.avatarContainer}>
-                    <Avatar size={'xlarge'} rounded source={image ? { uri: image } : require('../assets/user.jpg')} />
-                </View>
+        {/* Change Pic Botton Container */}
+        <View style={styles.changePicBottonContainer}>
 
-                {/* Change Pic Botton Container */}
-                <View style={styles.changePicBottonContainer}>
+            <TouchableOpacity style={styles.changePicButton} onPress={pickImage}>
+                <Text style={styles.changePicTxt}>Change Picture</Text>
+            </TouchableOpacity>
 
-                    <TouchableOpacity style={styles.changePicButton} onPress={pickImage}>
-                        <Text style={styles.changePicTxt}>Change Picture</Text>
-                    </TouchableOpacity>
+        </View>
 
-                </View>
+        {/* User Info */}
+        <View style={styles.userInfo}>
 
-                {/* User Info */}
-                <View style={styles.userInfo}>
+            {/* Name */}
+            <View style={styles.userInfoHeaderContainer}>
+                <Text style={styles.headerTxt}>Name</Text>
+            </View>
+            <View style={styles.inputContainer}>
+                <TextInput placeholder='Mohamed' style={styles.input}/> 
+            </View>
 
-                    {/* Name */}
-                    <View style={styles.userInfoHeaderContainer}>
-                        <Text style={styles.headerTxt}>Name</Text>
-                    </View>
-                    <View style={styles.inputContainer}>
-                // <TextInput placeholder='Mohamed' style={styles.input} />
-                        <Input
-                            autoCapitalize='none'
-                            value={email}
-                            onChangeText={(txt) => setEmail(txt)}
-                            placeholder="example@gmail.com"
-                            label="Email Address"
-                            rightIcon={
-                                <Zocial
-                                    name="email"
-                                    size={24}
-                                    color={!incorrect ? "black" : "red"}
-                                />
-                            }
-                            labelStyle={{ color: "black", paddingBottom: screenWidth * 0.03, fontSize: 17, fontWeight: "400" }}
-                            inputContainerStyle={{
-                                borderWidth: 1,
-                                borderColor: 'black',
-                                borderRadius: 5,
-                                paddingHorizontal: 10,
-                            }}
-                            containerStyle={{
-                                paddingHorizontal: screenWidth * 0.02,
-                                width: screenWidth * 0.9,
-                            }}
-                            keyboardType='email-address'
-                        />            </View>
+            {/* Email ID */}
+            <View style={styles.userInfoHeaderContainer}>
+                <Text style={styles.headerTxt}>Email ID</Text>
+            </View>
+            <View style={styles.inputContainer}>
+                <TextInput inputMode='email' placeholder='Exampl@hotmail.com' style={styles.input}/>
+            </View>
+        </View>
 
-                    {/* Email ID */}
-                    <View style={styles.userInfoHeaderContainer}>
-                        <Text style={styles.headerTxt}>Email ID</Text>
-                    </View>
-                    <View style={styles.inputContainer}>
-                        <TextInput inputMode='email' placeholder='Exampl@hotmail.com' style={styles.input} />
-                    </View>
-
-                </View>
-
-                {/* Update Button */}
-                <View style={styles.UpdateButtonContainer}>
-                    <TouchableOpacity style={styles.UpdateButton}>
-                        <Text style={styles.UpdateTxt}>Update</Text>
-                    </TouchableOpacity>
-                </View>
-
-
-            </ScrollView>
-        </SafeAreaView>
-    )
+         {/* Update Button */}
+         <View style={styles.UpdateButtonContainer}>
+            <TouchableOpacity style={styles.UpdateButton}>
+                <Text style={styles.UpdateTxt}>Update</Text>
+            </TouchableOpacity>
+        </View>
+        
+        
+        </ScrollView>
+    </SafeAreaView>
+  )
 }
 
 export default EditProfile
 
 const styles = StyleSheet.create({
-    container: {
+    container:{
         backgroundColor: '#e6e6e6',
         flex: 1,
         alignItems: 'center'
     },
 
     // Avatar Container
-    avatarContainer: {
+    avatarContainer:{
         // backgroundColor: 'tomato',
         width: screenWidth,
         height: screenHeight * 0.23,
@@ -120,14 +94,14 @@ const styles = StyleSheet.create({
     },
 
     // Change Pic Button
-    changePicBottonContainer: {
+    changePicBottonContainer:{
         // backgroundColor: 'gray',
         width: screenWidth,
         height: screenHeight * 0.1,
         justifyContent: 'center',
         alignItems: 'center'
     },
-    changePicButton: {
+    changePicButton:{
         backgroundColor: '#2F7694',
         width: '45%',
         height: '50%',
@@ -135,18 +109,18 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
-    changePicTxt: {
+    changePicTxt:{
         color: 'white'
     },
 
     // User Information
-    userInfo: {
+    userInfo:{
         // backgroundColor: 'pink',
         width: screenWidth,
         height: screenHeight * 0.4,
 
     },
-    userInfoHeaderContainer: {
+    userInfoHeaderContainer:{
         // backgroundColor: 'gray',
         width: '100%',
         // height: '8%',
@@ -154,16 +128,16 @@ const styles = StyleSheet.create({
         paddingLeft: 20,
         justifyContent: 'center'
     },
-    headerTxt: {
+    headerTxt:{
         fontSize: 17,
         paddingBottom: 5
     },
-    inputContainer: {
+    inputContainer:{
         // backgroundColor: 'yellow',
         height: '15%',
         paddingLeft: 20,
     },
-    input: {
+    input:{
         width: '90%',
         height: '85%',
         backgroundColor: 'white',
@@ -174,7 +148,7 @@ const styles = StyleSheet.create({
     },
 
     // Sign Up Button
-    UpdateButtonContainer: {
+    UpdateButtonContainer:{
         // backgroundColor: 'lightgray',
         width: screenWidth,
         height: screenHeight * 0.1,
@@ -183,7 +157,7 @@ const styles = StyleSheet.create({
     },
 
     // Update Button
-    UpdateButton: {
+    UpdateButton:{
         width: '80%',
         height: '60%',
         backgroundColor: '#2F7694',
@@ -191,7 +165,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center'
     },
-    UpdateTxt: {
+    UpdateTxt:{
         fontSize: 16,
         fontWeight: 'bold',
         color: 'white'
