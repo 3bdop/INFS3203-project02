@@ -7,7 +7,8 @@ import { CardDivider } from '@rneui/base/dist/Card/Card.Divider';
 const screenWidth = Dimensions.get('window').width
 const screenHeight = Dimensions.get('window').height
 
-const Settings = ({navigation}) => {
+const Settings = ({navigation, route}) => {
+    const { email } = route.params;
   return (
       <SafeAreaView style={styles.container}>
 
@@ -23,7 +24,7 @@ const Settings = ({navigation}) => {
         <Card containerStyle={[styles.CardContainer, {height: screenHeight * 0.13}]}>
 
             {/* Edit Profile */}
-            <TouchableOpacity style={[styles.options, {height: '45%'}]}>
+            <TouchableOpacity style={[styles.options, {height: '45%'}]} onPress={() => navigation.navigate('EditProfile', { email: email })}>
                 <Feather name={'user'} size={25} color={'#818181'}/>
                 <Text style={styles.txt}>Edit Profile</Text>
             </TouchableOpacity>
