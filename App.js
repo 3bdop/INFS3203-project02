@@ -7,6 +7,7 @@ import Main from './components/Main'
 import LoginScreen from './components/LoginScreen'
 import Home from './components/Home';
 import RegistarScreen from './components/RegistarScreen';
+import EditProfile from './components/EditProfile';
 
 
 const Stack = createNativeStackNavigator()
@@ -23,14 +24,16 @@ function MainTabs() {
 
 export default function App() {
   return (
-    <NavigationContainer>
-      <Stack.Navigator initialRouteName="Main">
-        <Stack.Screen name='Main' component={Main} options={{ headerShown: false }} />
-        <Stack.Screen name='LoginScreen' component={LoginScreen} options={{ headerShown: false}} />
-        <Stack.Screen name='RegistarScreen' component={RegistarScreen} options={{ headerShown: false}} />
-        <Stack.Screen name='MainTabs' component={MainTabs} options={{ headerShown: false}} />
-      </Stack.Navigator>
-    </NavigationContainer>
+    // <NavigationContainer>
+    //   <Stack.Navigator initialRouteName="Main">
+    //     <Stack.Screen name='Main' component={Main} options={{ headerShown: false }} />
+    //     <Stack.Screen name='LoginScreen' component={LoginScreen} options={{ headerShown: false}} />
+    //     <Stack.Screen name='RegistarScreen' component={RegistarScreen} options={{ headerShown: false}} />
+    //     <Stack.Screen name='MainTabs' component={MainTabs} options={{ headerShown: false}} />
+    //   </Stack.Navigator>
+    // </NavigationContainer>
+    <EditProfile/>
+
   );
 }
 
