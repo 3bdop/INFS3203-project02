@@ -9,6 +9,9 @@ import Main from "./components/Main";
 import LoginScreen from "./components/LoginScreen";
 import Register from "./components/RegistarScreen";
 import Home from "./components/Home";
+import SettingsScreen from './components/SettingsScreen'
+import EditProfile from "./components/EditProfile";
+
 import { TabBarIOS } from "react-native";
 const Stack = createNativeStackNavigator();
 
@@ -33,6 +36,17 @@ function Feed({ navigation, route }) {
         options={{
           tabBarIcon: ({ size, color }) => (
             <MaterialIcons name="home" size={size} color={color} />
+          ),
+        }}
+      />
+
+      <Tab.Screen
+        name="Settings"
+        initialParams={{ email: email }}
+        component={SettingsScreen}
+        options={{
+          tabBarIcon: ({ size, color }) => (
+            <MaterialIcons name="settings" size={size} color={color} />
           ),
         }}
       />
@@ -64,6 +78,11 @@ export default function App() {
           name="Feed"
           component={Feed}
           options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="EditProfile"
+          component={EditProfile}
+          options={{ headerShown: true, headerTransparent: true, headerBackTitle: 'Home' }}
         />
       </Stack.Navigator>
     </NavigationContainer>
