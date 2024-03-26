@@ -1,24 +1,25 @@
 import React, { useState, useEffect } from 'react';
-import { ScrollView, TextInput, SafeAreaView, StyleSheet, Dimensions, Text, View, TouchableOpacity } from 'react-native';
-import { AntDesign, Entypo } from 'react-native-vector-icons';
+import { ScrollView, TextInput, SafeAreaView, StyleSheet, Dimensions, Text, View, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { Image, Input, Button, Card, Divider, Avatar } from '@rneui/themed';
+import { Feather } from 'react-native-vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Avatar, Card } from "@rneui/themed";
 import * as ImagePicker from 'expo-image-picker';
 import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage'
-import { addDoc, doc, collection, getDoc, getDocs, setDoc, query, where, updateDoc } from "firebase/firestore";
+import { doc, updateDoc } from "firebase/firestore";
 import { auth, db, storage } from "./config";
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
 
 
 const EditProfile = ({ navigation, route }) => {
-    const { email } = route.params
-    const [image, setImage] = useState(null)
-    const [newName, setNewName] = useState()
+    const { email, userData } = route.params
+    const [image, setImage] = useState(userData.pic)
+    const [newName, setNewName] = useState(userData.name)
     const [isLoading, setIsLoading] = useState(false)
     const pickImage = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.All,
+            allowsEditing: true
         });
         if (!result.canceled && result.assets) {
             const uri = result.assets[0].uri;
@@ -80,7 +81,7 @@ const EditProfile = ({ navigation, route }) => {
 
 
                 <View style={styles.avatarContainer}>
-                    <Avatar size={'xlarge'} rounded source={image ? { uri: image } : require('../assets/user.jpg')} />
+                    <Avatar size={'xlarge'} rounded source={image ? { uri: image } : { uri: userData.pic }} />
                 </View>
 
                 {/* Change Pic Botton Container */}
@@ -96,11 +97,32 @@ const EditProfile = ({ navigation, route }) => {
                 <View style={styles.userInfo}>
 
                     {/* Name */}
-                    <View style={styles.userInfoHeaderContainer}>
-                        <Text style={styles.headerTxt}>Name</Text>
-                    </View>
                     <View style={styles.inputContainer}>
-                        <TextInput placeholder='Mohamed' style={styles.input} />
+                        <Input
+                            autoCapitalize='none'
+                            value={newName}
+                            placeholder={userData.name}
+                            onChangeText={(txt) => setNewName(txt)}
+                            label="Name:"
+                            rightIcon={
+                                <Feather
+                                    name="user"
+                                    size={24}
+                                    color="black"
+                                />
+                            }
+                            labelStyle={{ color: "black", paddingBottom: screenWidth * 0.03, fontSize: 17, fontWeight: "400" }}
+                            inputContainerStyle={{
+                                borderWidth: 1,
+                                borderColor: 'black',
+                                borderRadius: 5,
+                                paddingHorizontal: 10,
+                            }}
+                            containerStyle={{
+                                paddingHorizontal: screenWidth * 0.02,
+                                width: screenWidth * 0.9,
+                            }}
+                        />
                     </View>
 
                     {/* Email ID */}
@@ -109,9 +131,30 @@ const EditProfile = ({ navigation, route }) => {
 
                 {/* Update Button */}
                 <View style={styles.UpdateButtonContainer}>
-                    <TouchableOpacity style={styles.UpdateButton} onPress={handleAll}>
+                    <Button
+                        onPress={handleAll}
+                        title={
+                            isLoading ? (
+                                <ActivityIndicator size="small" color="#fff" />
+                            ) : (
+                                "Update"
+                            )
+                        }
+                        titleStyle={{ fontWeight: "bold" }}
+                        buttonStyle={{
+                            backgroundColor: "#6B8BE0",
+                            paddingVertical: screenWidth * 0.045,
+                        }}
+                        containerStyle={{
+                            width: screenWidth * 0.75,
+                            borderRadius: 10,
+                            // marginHorizontal: -1,
+                            marginVertical: screenWidth * 0.05,
+                        }}
+                    />
+                    {/* <TouchableOpacity style={styles.UpdateButton} onPress={handleAll}>
                         <Text style={styles.UpdateTxt}>Update</Text>
-                    </TouchableOpacity>
+                    </TouchableOpacity> */}
                 </View>
 
 
@@ -147,7 +190,7 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     changePicButton: {
-        backgroundColor: '#2F7694',
+        backgroundColor: '#6B8BE0',
         width: '45%',
         height: '50%',
         borderRadius: 20,
@@ -195,8 +238,8 @@ const styles = StyleSheet.create({
     // Sign Up Button
     UpdateButtonContainer: {
         // backgroundColor: 'lightgray',
-        width: screenWidth,
-        height: screenHeight * 0.1,
+        // width: screenWidth,
+        // height: screenHeight * 0.5,
         justifyContent: 'center',
         alignItems: 'center'
     },
@@ -205,7 +248,7 @@ const styles = StyleSheet.create({
     UpdateButton: {
         width: '80%',
         height: '60%',
-        backgroundColor: '#2F7694',
+        backgroundColor: '#6B8BE0',
         borderRadius: 15,
         justifyContent: 'center',
         alignItems: 'center'

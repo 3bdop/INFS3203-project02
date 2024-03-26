@@ -1,16 +1,46 @@
 import { StyleSheet, Dimensions, Image, Text, View, TouchableOpacity, Platform, TextInput, ScrollView, SafeAreaView } from 'react-native';
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { Feather, MaterialIcons } from 'react-native-vector-icons'
 import { Avatar, Card } from '@rneui/themed';
 import { CardDivider } from '@rneui/base/dist/Card/Card.Divider';
-
+import {
+    addDoc,
+    collection,
+    getDoc,
+    getDocs,
+    setDoc,
+    query,
+    where,
+    doc,
+} from "firebase/firestore";
+import { db } from "./config";
 const screenWidth = Dimensions.get('window').width
 const screenHeight = Dimensions.get('window').height
 
-const Settings = ({navigation, route}) => {
+const Settings = ({ navigation, route }) => {
     const { email } = route.params;
-  return (
-      <SafeAreaView style={styles.container}>
+    const [userData, setUserData] = useState(null);
+
+    useEffect(() => {
+        const fetchUserData = async () => {
+            try {
+                const docRef = doc(db, "users", email);
+                const docSnap = await getDoc(docRef);
+                if (docSnap.exists()) {
+                    console.log("Document data:");
+                    setUserData(docSnap.data());
+                } else {
+                    console.log("No such document!");
+                }
+            } catch (error) {
+                console.log(error.message);
+            }
+        };
+
+        fetchUserData();
+    }, []);
+    return (
+        <SafeAreaView style={styles.container}>
 
             <ScrollView>
 
@@ -23,11 +53,11 @@ const Settings = ({navigation, route}) => {
                     {/* Support & About options */}
                     <Card containerStyle={[styles.CardContainer, { height: screenHeight * 0.13 }]}>
 
-            {/* Edit Profile */}
-            <TouchableOpacity style={[styles.options, {height: '45%'}]} onPress={() => navigation.navigate('EditProfile', { email: email })}>
-                <Feather name={'user'} size={25} color={'#818181'}/>
-                <Text style={styles.txt}>Edit Profile</Text>
-            </TouchableOpacity>
+                        {/* Edit Profile */}
+                        <TouchableOpacity style={[styles.options, { height: '45%' }]} onPress={() => navigation.navigate('EditProfile', { email: email, userData })}>
+                            <Feather name={'user'} size={25} color={'#818181'} />
+                            <Text style={styles.txt}>Edit Profile</Text>
+                        </TouchableOpacity>
 
                         <CardDivider />
 
