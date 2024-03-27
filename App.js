@@ -9,7 +9,7 @@ import Main from "./components/Main";
 import LoginScreen from "./components/LoginScreen";
 import Register from "./components/RegistarScreen";
 import Home from "./components/Home";
-import SettingsScreen from './components/SettingsScreen'
+import SettingsScreen from "./components/SettingsScreen";
 import EditProfile from "./components/EditProfile";
 import PetDetails from "./components/PetDetails";
 
@@ -83,16 +83,23 @@ export default function App() {
         <Stack.Screen
           name="EditProfile"
           component={EditProfile}
-          options={{ headerShown: true, headerTransparent: true, headerBackTitle: 'Home' }}
+          options={{
+            headerShown: true,
+            headerTransparent: true,
+            headerTitle: "Edit Profile",
+          }}
         />
         <Stack.Screen
           name="PetDetails"
           component={PetDetails}
-          options={{ headerShown: true, headerTransparent: true, headerBackTitle: 'Home' }}
+          options={{
+            headerShown: true,
+            headerTransparent: true,
+            headerTitle: "",
+          }}
         />
       </Stack.Navigator>
     </NavigationContainer>
-
   );
 }
 
