@@ -7,7 +7,8 @@ import {
   TouchableOpacity,
 } from "react-native";
 import AntDesign from "react-native-vector-icons/AntDesign";
-import { Image, Input, Button, Card, Divider, SearchBar } from "@rneui/themed";
+
+import { Image, Button, Card, Divider, SearchBar } from "@rneui/themed";
 // import RNFetchBlob from 'react-native-fetch-blob';
 
 import React, { useEffect } from "react";
@@ -38,6 +39,7 @@ export default function PetDetails({ navigation, route }) {
     )
   );
   const { item } = route.params;
+  console.log(item)
   /// This is the reciving object sample ibside the  const {item} = route.params; below
   // {"age": "sas", "category": "bird", "description": "sas", "id": "By3mSiouMAbyAjfXQ0G5",
   //"image": "https://firebasestorage.googleapis.com/v0/b/project-26815.appspot.com/o/pet_images%2FBy3mSiouMAbyAjfXQ0G5?alt=media&token=//0b843c3e-9c3c-428b-98fc-768f1895c77b", "name": "sas",
@@ -46,17 +48,17 @@ export default function PetDetails({ navigation, route }) {
   //{"emai": "o@g.com", "name": "omer",liked_post:[By3mSiouMAbyAjfXQ0G5,By3mSiouMAbyAjfXQ0G5,By3mSiouMAbyAjfXQ0G5] all the posts id he liked <
   //"phone": "51332266", "pic": "https://firebasestorage.googleapis.com/v0/b/project-26815.appspot.com/o/profile_pictures%2Fo%40g.com.jpg?alt=media&token=5fef3ba0-b862-42ae-97be-723a3fdf722f"}
 
-  const read = async () => {
-    const docRef = doc(db, "pets", item.id);
-    const docSnap = await getDoc(docRef);
-    if (docSnap.exists()) {
-      // console.log("Document data:", docSnap.data().image);
-      return docSnap.data().image;
-    } else {
-      // doc.data() will be undefined in this case
-      console.log("No such document!");
-    }
-  };
+  // const read = async () => {
+  //   const docRef = doc(db, "pets", item.id);
+  //   const docSnap = await getDoc(docRef);
+  //   if (docSnap.exists()) {
+  //     // console.log("Document data:", docSnap.data().image);
+  //     return docSnap.data().image;
+  //   } else {
+  //     // doc.data() will be undefined in this case
+  //     console.log("No such document!");
+  //   }
+  // };
 
   return (
     <View style={styles.container}>
@@ -64,7 +66,7 @@ export default function PetDetails({ navigation, route }) {
         style={{
           width: screenWidth * 1.2,
           height: "50%",
-          backgroundColor: "#fff",
+          backgroundColor: "#C9CEF4",
           borderBottomLeftRadius: screenWidth,
           borderBottomRightRadius: screenWidth,
           alignItems: "center",
@@ -78,7 +80,6 @@ export default function PetDetails({ navigation, route }) {
             borderRadius: 30,
           }}
           source={{ uri: item.image }}
-          onPress={read}
         />
       </View>
 
@@ -109,7 +110,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     // justifyContent: 'center',
-    backgroundColor: "#C9CEF4",
+    backgroundColor: "#fff",
     // backgroundColor: "#fff",
   },
 });
