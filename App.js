@@ -9,9 +9,10 @@ import Main from "./components/Main";
 import LoginScreen from "./components/LoginScreen";
 import Register from "./components/RegistarScreen";
 import Home from "./components/Home";
-import SettingsScreen from './components/SettingsScreen'
+import SettingsScreen from "./components/SettingsScreen";
 import EditProfile from "./components/EditProfile";
 import PetDetails from "./components/PetDetails";
+import PostPet from "./components/PostPet";
 
 import { TabBarIOS } from "react-native";
 const Stack = createNativeStackNavigator();
@@ -37,6 +38,16 @@ function Feed({ navigation, route }) {
         options={{
           tabBarIcon: ({ size, color }) => (
             <MaterialIcons name="home" size={size} color={color} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        initialParams={{ email: email }}
+        name="Add "
+        component={PostPet}
+        options={{
+          tabBarIcon: ({ size, color }) => (
+            <Ionicons name="add-circle-outline" size={size} color={color} />
           ),
         }}
       />
@@ -83,16 +94,23 @@ export default function App() {
         <Stack.Screen
           name="EditProfile"
           component={EditProfile}
-          options={{ headerShown: true, headerTransparent: true, headerBackTitle: 'Home' }}
+          options={{
+            headerShown: true,
+            headerTransparent: true,
+            headerTitle: "Edit Profile",
+          }}
         />
         <Stack.Screen
           name="PetDetails"
           component={PetDetails}
-          options={{ headerShown: true, headerTransparent: true, headerBackTitle: 'Home' }}
+          options={{
+            headerShown: true,
+            headerTransparent: true,
+            headerTitle: "",
+          }}
         />
       </Stack.Navigator>
     </NavigationContainer>
-
   );
 }
 

@@ -22,7 +22,7 @@ import {
   query,
   where,
   doc,
-  onSnapshot
+  onSnapshot,
 } from "firebase/firestore";
 import { db } from "./config";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -60,53 +60,58 @@ export default function HomeScreen({ navigation, route }) {
   }, []);
 
   useEffect(() => {
-    const fetchPetsWithOwners = async () => {
-      try {
-        const petsCollection = collection(db, "pets");
-        const petsSnapshot = await getDocs(petsCollection);
-
+    const unsubscribe = onSnapshot(
+      collection(db, "pets"),
+      async (snapshot) => {
         const petsWithOwnersData = [];
-        for (const petDoc of petsSnapshot.docs) {
+        for (const petDoc of snapshot.docs) {
           const petData = petDoc.data();
           const ownerEmail = petData.posted_by;
 
-          // Fetch user details based on the owner's email
-          const userDocRef = doc(db, "users", ownerEmail);
-          const userDocSnapshot = await getDoc(userDocRef);
-          const userData = userDocSnapshot.data();
-
-          const petWithOwner = {
-            id: petDoc.id,
-            ...petData,
-            owner: userData, // Add owner details to the pet object
-          };
-
-          petsWithOwnersData.push(petWithOwner);
-          console.log(petWithOwner);
+          try {
+            const userDocRef = doc(db, "users", ownerEmail);
+            const userDocSnapshot = await getDoc(userDocRef);
+            if (userDocSnapshot.exists()) {
+              const userData = userDocSnapshot.data();
+              const petWithOwner = {
+                id: petDoc.id,
+                ...petData,
+                owner: userData,
+              };
+              petsWithOwnersData.push(petWithOwner);
+            } else {
+              console.log("No user found for email: ${ownerEmail}");
+            }
+          } catch (error) {
+            console.error("Error fetching user data:", error);
+          }
         }
-
         setPetsWithOwners(petsWithOwnersData);
-      } catch (error) {
+      },
+      (error) => {
         console.error("Error fetching pets with owners:", error);
       }
-    };
-
-    fetchPetsWithOwners();
+    );
+    return () => unsubscribe();
   }, []);
 
   useEffect(() => {
     const docRef = doc(db, "users", email);
 
-    const unsubscribe = onSnapshot(docRef, (doc) => {
-      if (doc.exists()) {
-        console.log("Current data:", doc.data());
-        setUserData(doc.data());
-      } else {
-        console.log("No such document!");
+    const unsubscribe = onSnapshot(
+      docRef,
+      (doc) => {
+        if (doc.exists()) {
+          console.log("Current data:", doc.data());
+          setUserData(doc.data());
+        } else {
+          console.log("No such document!");
+        }
+      },
+      (error) => {
+        console.log("Error getting document:", error);
       }
-    }, (error) => {
-      console.log("Error getting document:", error);
-    });
+    );
 
     // Cleanup the listener when the component unmounts
     return () => unsubscribe();
@@ -124,7 +129,12 @@ export default function HomeScreen({ navigation, route }) {
           <View style={styles.firstTopView}>
             <Text style={styles.topWelcomeText}>Welcome {userData.name} </Text>
             <TouchableOpacity
-              onPress={() => navigation.navigate('EditProfile', { email: email, userData: userData })}
+              onPress={() =>
+                navigation.navigate("EditProfile", {
+                  email: email,
+                  userData: userData,
+                })
+              }
               style={{
                 width: 50,
                 height: 50,
