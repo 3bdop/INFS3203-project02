@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { View, StyleSheet, Dimensions, ActivityIndicator } from "react-native";
 import { Input, Button, Text, Avatar } from "@rneui/themed";
-
+import axios from 'axios';
 import DropDownPicker from "react-native-dropdown-picker";
 import { Picker } from "@react-native-picker/picker";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -34,7 +34,8 @@ const PostPet = ({ navigation, route }) => {
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("dog");
   const [image, setImage] = useState(null);
-
+  const [imageBG, setImageBG] = useState(null);
+  console.log(imageBG)
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -44,6 +45,44 @@ const PostPet = ({ navigation, route }) => {
     if (!result.canceled) {
       setImage(result.assets[0].uri);
       setFileName(result.assets[0]);
+    }
+  };
+
+  const removeBackground = async (imageUrl, docId) => {
+
+    const encodedParams = new URLSearchParams();
+    encodedParams.set('image_url', imageUrl);
+
+    const options = {
+      method: 'POST',
+      url: 'https://background-removal.p.rapidapi.com/remove',
+      headers: {
+        'content-type': 'application/x-www-form-urlencoded',
+        'X-RapidAPI-Key': 'b5b40441e3mshc94e182b936405ep19e10cjsnb404ee6d5858',
+        'X-RapidAPI-Host': 'background-removal.p.rapidapi.com'
+      },
+      data: encodedParams,
+    };
+
+    try {
+      const response = await axios.request(options);
+      console.log(response.data);
+      const imgRef = ref(storage, `pet_images/${docId}`);
+
+      // Assuming the response data contains the URL of the background removed image
+      const imgResponse = await fetch(response.data.response.image_url);
+      const imgBlob = await imgResponse.blob();
+
+      // Upload the image
+      await uploadBytesResumable(imgRef, imgBlob);
+
+      // Once uploaded, get the download URL
+      const downloadURL = await getDownloadURL(imgRef);
+      // setImageBG(downloadURL)
+      return downloadURL
+    } catch (error) {
+      console.error(error);
+      return null; // Return null in case of error
     }
   };
   const uploadImage = async (docId) => {
@@ -69,6 +108,9 @@ const PostPet = ({ navigation, route }) => {
       return null; // Return null in case of error
     }
   };
+
+
+
   const store = async () => {
     try {
       // Notice the use of `collection` instead of `doc` for auto ID generation
@@ -81,23 +123,25 @@ const PostPet = ({ navigation, route }) => {
       });
       console.log("Document written with ID: ", docRef.id);
       setId(docRef.id); // Set the auto-generated ID
-      const imageUrl = await uploadImage(docRef.id); // Assuming uploadImage function returns image URL
-      await updateDoc(docRef, { image: imageUrl });
+      const imageUrl = await uploadImage(docRef.id);
+      let imgBG = await removeBackground(imageUrl, docRef.id)
+      // Assuming uploadImage function returns image URL
+      await updateDoc(docRef, { image: imgBG });
     } catch (error) {
       console.error("Error adding document: ", error);
     }
   };
-
   const handleAll = async () => {
     setIsLoading(true);
+    // removeBackground(image)
     const tempID = await store();
     setIsLoading(false);
+    setImage(null);
     navigation.navigate("Home", { c: 1 });
     setAge("");
     setCategory("dog");
     setDescription("");
     setName("");
-    setImage(null);
   };
 
   return (
@@ -113,6 +157,7 @@ const PostPet = ({ navigation, route }) => {
         placeholder="image"
         containerStyle={styles.avatar}
       />
+      {/* <Button title={'press'} onPress={() => removeBackground(image)} /> */}
       <View
         style={{
           justifyContent: "center",
@@ -183,8 +228,9 @@ const PostPet = ({ navigation, route }) => {
           numberOfLines={1}
         >
           <Picker.Item label="dog" value="dog" style={styles.picker} />
-          <Picker.Item label="cat" value="++" style={styles.picker} />
+          <Picker.Item label="cat" value="cat" style={styles.picker} />
           <Picker.Item label="bird" value="bird" style={styles.picker} />
+          <Picker.Item label="monkey" value="monkey" style={styles.picker} />
         </Picker>
       </View>
 

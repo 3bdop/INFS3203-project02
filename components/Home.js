@@ -95,27 +95,62 @@ export default function HomeScreen({ navigation, route }) {
     return () => unsubscribe();
   }, []);
 
-  useEffect(() => {
-    const docRef = doc(db, "users", email);
+  // useEffect(() => {
+  //   const docRef = doc(db, "users", email);
 
-    const unsubscribe = onSnapshot(
-      docRef,
-      (doc) => {
-        if (doc.exists()) {
-          console.log("Current data:", doc.data());
-          setUserData(doc.data());
-        } else {
-          console.log("No such document!");
-        }
-      },
-      (error) => {
-        console.log("Error getting document:", error);
-      }
-    );
+  //   const unsubscribe = onSnapshot(
+  //     docRef,
+  //     (doc) => {
+  //       if (doc.exists()) {
+  //         console.log("Current data:", doc.data());
+  //         setUserData(doc.data());
+  //       } else {
+  //         console.log("No such document!");
+  //       }
+  //     },
+  //     (error) => {
+  //       console.log("Error getting document:", error);
+  //     }
+  //   );
 
-    // Cleanup the listener when the component unmounts
-    return () => unsubscribe();
-  }, [email]); // Dependency array to re-run if email changes
+  //   // Cleanup the listener when the component unmounts
+  //   return () => unsubscribe();
+  // }, [email]); // Dependency array to re-run if email changes
+
+  // useEffect(() => {
+  //   const fetchPetsWithOwners = async () => {
+  //     try {
+  //       const petsCollection = collection(db, "pets");
+  //       const petsSnapshot = await getDocs(petsCollection);
+
+  //       const petsWithOwnersData = [];
+  //       for (const petDoc of petsSnapshot.docs) {
+  //         const petData = petDoc.data();
+  //         const ownerEmail = petData.posted_by;
+
+  //         // Fetch user details based on the owner's email
+  //         const userDocRef = doc(db, "users", ownerEmail);
+  //         const userDocSnapshot = await getDoc(userDocRef);
+  //         const userData = userDocSnapshot.data();
+
+  //         const petWithOwner = {
+  //           id: petDoc.id,
+  //           ...petData,
+  //           owner: userData, // Add owner details to the pet object
+  //         };
+
+  //         petsWithOwnersData.push(petWithOwner);
+  //         console.log(petWithOwner);
+  //       }
+
+  //       setPetsWithOwners(petsWithOwnersData);
+  //     } catch (error) {
+  //       console.error("Error fetching pets with owners:", error);
+  //     }
+  //   };
+
+  //   fetchPetsWithOwners();
+  // }, []);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -238,6 +273,7 @@ export default function HomeScreen({ navigation, route }) {
                     <View key={index} style={styles.cardStyle}>
                       <TouchableOpacity
                         onPress={() =>
+                          // console.log(item)
                           navigation.navigate("PetDetails", { item })
                         }
                       >
