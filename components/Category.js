@@ -67,6 +67,41 @@ const Category = ({ active, setActive }) => {
       </TouchableOpacity>
       <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
         <TouchableOpacity
+          onPress={() => setActive("monkey")}
+          style={[
+            styles.animalCategoryCard,
+            {
+              backgroundColor: active == "monkey" ? "#6B8BE0" : "snow",
+              flexDirection: "row",
+            },
+          ]}
+        >
+          <Image
+            source={require("../assets/monkey-rizz.gif")}
+            style={styles.animalImageCard}
+          />
+          <View
+            style={{
+              flex: 1,
+              justifyContent: "center",
+              alignItems: "center",
+              padding: 0,
+            }}
+          >
+            <Text
+              style={[
+                // styles.animalCardFontSize,
+                {
+                  color: active == "monkey" ? "white" : "grey", fontSize: screenWidth * 0.05,
+                  marginRight: "0%",
+                },
+              ]}
+            >
+              Monkeys
+            </Text>
+          </View>
+        </TouchableOpacity>
+        <TouchableOpacity
           onPress={() => setActive("dog")}
           style={[
             styles.animalCategoryCard,
@@ -77,7 +112,7 @@ const Category = ({ active, setActive }) => {
           ]}
         >
           <Image
-            source={require("../assets/dog2.jpeg")}
+            source={require("../assets/dogy.gif")}
             style={styles.animalImageCard}
           />
           <View
@@ -109,7 +144,7 @@ const Category = ({ active, setActive }) => {
           ]}
         >
           <Image
-            source={require("../assets/pink.jpg")}
+            source={require("../assets/caty.gif")}
             style={styles.animalImageCard}
           />
           <View
@@ -141,7 +176,7 @@ const Category = ({ active, setActive }) => {
           ]}
         >
           <Image
-            source={require("../assets/bird_category.jpeg")}
+            source={require("../assets/birdy.gif")}
             style={styles.animalImageCard}
           />
           <View
@@ -162,6 +197,7 @@ const Category = ({ active, setActive }) => {
             </Text>
           </View>
         </TouchableOpacity>
+
       </ScrollView>
     </View>
   );
