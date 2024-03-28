@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 import AntDesign from "react-native-vector-icons/AntDesign";
+
 import { Image, Input, Button, Card, Divider, SearchBar } from "@rneui/themed";
 // import RNFetchBlob from 'react-native-fetch-blob';
 
@@ -24,7 +25,7 @@ import {
 import { db } from "./config";
 const screenWidth = Dimensions.get("window").width;
 const screenHeight = Dimensions.get("window").height;
-export default function PetDetails({ navigation, route }) {
+export default async function PetDetails({ navigation, route }) {
   useEffect(() =>
     navigation.setOptions(
       {
@@ -78,7 +79,6 @@ export default function PetDetails({ navigation, route }) {
             borderRadius: 30,
           }}
           source={{ uri: item.image }}
-          onPress={read}
         />
       </View>
 
