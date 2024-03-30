@@ -109,6 +109,16 @@ export default function App() {
             headerTitle: "",
           }}
         />
+          <Stack.Screen
+          name="PostPet"
+          component={PostPet}
+          options={{
+            headerShown: true,
+            headerTransparent: true,
+            headerTitle: "",
+            headerBackTitle: 'Home'
+          }}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );

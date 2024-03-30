@@ -225,7 +225,7 @@ export default function HomeScreen({ navigation, route }) {
               >
                 You don't need {"\n"}your pet?
               </Text>
-              <TouchableOpacity style={styles.donate}>
+              <TouchableOpacity style={styles.donate} onPress={()=>navigation.navigate("PostPet",{ email: email})}>
                 <Text style={{ color: "#6B8BE0", fontWeight: "bold" }}>
                   Find Home
                 </Text>
