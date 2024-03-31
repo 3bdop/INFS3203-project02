@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, StyleSheet, Dimensions, ActivityIndicator } from "react-native";
+import { View, StyleSheet, Dimensions, ScrollView, ActivityIndicator } from "react-native";
 import { Input, Button, Text, Avatar } from "@rneui/themed";
 import axios from 'axios';
 import DropDownPicker from "react-native-dropdown-picker";
@@ -59,7 +59,7 @@ const PostPet = ({ navigation, route }) => {
       url: 'https://background-removal.p.rapidapi.com/remove',
       headers: {
         'content-type': 'application/x-www-form-urlencoded',
-        'X-RapidAPI-Key': 'b5b40441e3mshc94e182b936405ep19e10cjsnb404ee6d5858',
+        'X-RapidAPI-Key': '11c5c3134emsh853ea4476e89126p15141djsn3a7810aaead0',
         'X-RapidAPI-Host': 'background-removal.p.rapidapi.com'
       },
       data: encodedParams,
@@ -149,6 +149,8 @@ const PostPet = ({ navigation, route }) => {
 
   return (
     <SafeAreaView style={styles.container}>
+      
+      <ScrollView contentContainerStyle={{ paddingBottom: screenHeight * 0.5 }}>
       <Text style={styles.topHeading}>New Post</Text>
       <Avatar
         titleStyle={{ color: "black" }}
@@ -319,6 +321,7 @@ const PostPet = ({ navigation, route }) => {
           }}
         />
       </View>
+      </ScrollView>
     </SafeAreaView>
   );
 };
