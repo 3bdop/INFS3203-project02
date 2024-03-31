@@ -5,24 +5,15 @@ import {
   SafeAreaView,
   Dimensions,
   TouchableOpacity,
+  ActivityIndicator,
+  Alert,
 } from "react-native";
-import AntDesign from "react-native-vector-icons/AntDesign";
+import { AntDesign, MaterialIcons } from "react-native-vector-icons";
 
 import { Image, Button, Card, Divider, SearchBar } from "@rneui/themed";
 // import RNFetchBlob from 'react-native-fetch-blob';
 
-import React, { useEffect } from "react";
-import {
-  addDoc,
-  collection,
-  doc,
-  setDoc,
-  getDoc,
-  query,
-  getDocs,
-  where,
-} from "firebase/firestore";
-import { db } from "./config";
+import React, { useEffect, useState } from "react";
 const screenWidth = Dimensions.get("window").width;
 const screenHeight = Dimensions.get("window").height;
 export default function PetDetails({ navigation, route }) {
@@ -30,41 +21,32 @@ export default function PetDetails({ navigation, route }) {
     navigation.setOptions(
       {
         headerLeft: () => (
-          <TouchableOpacity onPress={() => navigation.goBack()}>
+          <TouchableOpacity
+            onPress={() => navigation.goBack()}
+            style={{
+              backgroundColor: "#DDDDDD7E",
+              width: screenWidth * 0.08,
+              height: screenWidth * 0.08,
+              borderRadius: 5,
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
             <AntDesign name="left" size={25} />
           </TouchableOpacity>
         ),
+
       },
       []
     )
   );
-  const { item } = route.params;
-  console.log(item)
-  /// This is the reciving object sample ibside the  const {item} = route.params; below
-  // {"age": "sas", "category": "bird", "description": "sas", "id": "By3mSiouMAbyAjfXQ0G5",
-  //"image": "https://firebasestorage.googleapis.com/v0/b/project-26815.appspot.com/o/pet_images%2FBy3mSiouMAbyAjfXQ0G5?alt=media&token=//0b843c3e-9c3c-428b-98fc-768f1895c77b", "name": "sas",
-  //"owner": {"emai": "o@g.com", "name": "omer", "phone": "51332266", "pic": "https://firebasestorage.googleapis.com/v0/b/project-26815.appspot.com/o/profile_pictures%2Fo%40g.com.jpg?alt=media&token=5fef3ba0-b862-42ae-97be-723a3fdf722f"}, "posted_by": "o@g.com"}
-  // in case you want to implement Like Feature you can do the following inside the users tables make a like field which hold an array of liked posts exxample below
-  //{"emai": "o@g.com", "name": "omer",liked_post:[By3mSiouMAbyAjfXQ0G5,By3mSiouMAbyAjfXQ0G5,By3mSiouMAbyAjfXQ0G5] all the posts id he liked <
-  //"phone": "51332266", "pic": "https://firebasestorage.googleapis.com/v0/b/project-26815.appspot.com/o/profile_pictures%2Fo%40g.com.jpg?alt=media&token=5fef3ba0-b862-42ae-97be-723a3fdf722f"}
-
-  // const read = async () => {
-  //   const docRef = doc(db, "pets", item.id);
-  //   const docSnap = await getDoc(docRef);
-  //   if (docSnap.exists()) {
-  //     // console.log("Document data:", docSnap.data().image);
-  //     return docSnap.data().image;
-  //   } else {
-  //     // doc.data() will be undefined in this case
-  //     console.log("No such document!");
-  //   }
-  // };
-
+  const [isLoading, setIsLoading] = useState(false)
   return (
     <View style={styles.container}>
       <View
         style={{
-          width: screenWidth * 1.2,
+          width: screenWidth,
+          maxWidth: screenWidth,
           height: "50%",
           backgroundColor: "#C9CEF4",
           borderBottomLeftRadius: screenWidth,
@@ -75,32 +57,106 @@ export default function PetDetails({ navigation, route }) {
       >
         <Image
           style={{
-            width: screenWidth * 0.8,
-            height: screenWidth * 0.8,
+            marginRight: "5%",
+            // marginHorizontal: '10%',
+            width: screenWidth * 0.7,
+            height: screenWidth * 0.7,
             borderRadius: 30,
           }}
-          source={{ uri: item.image }}
+          source={{ uri: "" }}
         />
       </View>
-
-      <Text>PetDetails Screen</Text>
-
-      <Text>Name: {item.name}</Text>
-      <Text>Age: {item.age}</Text>
-      <Text> Category: {item.category.toUpperCase()}</Text>
-      <Text>Description: {item.description}</Text>
-      <Text>posted_by: {item.posted_by}</Text>
-      <Text>Owner Name: {item.owner.name}</Text>
-      <Image
+      <View
         style={{
-          width: 50,
-          height: 50,
-          borderWidth: 1,
-          marginRight: screenWidth * 0.04,
-          borderRadius: 30,
+          alignSelf: "flex-start",
+          marginLeft: screenWidth * 0.05,
+          height: "8%",
         }}
-        source={{ uri: item.owner.pic }} // Use the direct link from the object
-      />
+      >
+        <Text style={{ fontWeight: "bold", fontSize: screenWidth * 0.06 }}>
+
+        </Text>
+      </View>
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-around",
+          alignItems: "center",
+        }}
+      >
+        <View style={[styles.cardMiddle, { backgroundColor: "#f8d7b7" }]}>
+          <Text style={styles.cardText}>  
+          
+          </Text>
+          <Text style={{ color: "grey" }}>Age</Text>
+        </View>
+        <View
+          style={[
+            styles.cardMiddle,
+            { backgroundColor: "#f2b6f6" },
+          ]}
+        >
+          <Text style={styles.cardText}>
+            
+          </Text>
+          <Text style={{ color: "grey" }}>Gender</Text>
+        </View>
+        <View style={[styles.cardMiddle, { backgroundColor: "#f7b6be" }]}>
+          <Text style={styles.cardText}>
+            
+          </Text>
+          <Text style={{ color: "grey" }}>Weight</Text>
+        </View>
+      </View>
+      <View
+        style={{
+          alignSelf: "flex-start",
+          marginLeft: screenWidth * 0.05,
+          height: "15%",
+          justifyContent: "center",
+        }}
+      >
+        <Text
+          style={{
+            fontWeight: "bold",
+            fontSize: screenWidth * 0.06,
+            height: "40%",
+          }}
+        >
+          About
+        </Text>
+        <Text style={{ color: "grey", fontSize: screenWidth * 0.04 }}>
+         
+        </Text>
+      </View>
+      <View
+        style={{
+          justifyContent: "center",
+          alignItems: "center",
+          height: "10%",
+          marginTop: "13%",
+        }}
+      >
+        <Button
+          title={
+            isLoading ? (
+              <ActivityIndicator size="small" color="#fff" />
+            ) : (
+              "Adopt me"
+            )
+          }
+          titleStyle={{ fontWeight: "bold" }}
+          buttonStyle={{
+            backgroundColor: "#6B8BE0",
+            paddingVertical: screenWidth * 0.045,
+          }}
+          containerStyle={{
+            width: screenWidth * 0.6,
+            borderRadius: 20,
+            // marginHorizontal: -1,
+          }}
+        />
+      </View>
     </View>
   );
 }
@@ -108,9 +164,19 @@ export default function PetDetails({ navigation, route }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
+    // alignItems: "center",
     // justifyContent: 'center',
     backgroundColor: "#fff",
     // backgroundColor: "#fff",
+  },
+  cardMiddle: {
+    height: screenWidth * 0.19,
+    width: screenWidth * 0.3,
+    borderRadius: screenWidth * 0.05,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  cardText: {
+    fontWeight: "bold",
   },
 });

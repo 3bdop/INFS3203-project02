@@ -27,15 +27,16 @@ const PostPet = ({ navigation, route }) => {
   const [name, setName] = useState();
   const [id, setId] = useState();
   const [age, setAge] = useState();
+  const [weight, setWeight] = useState();
   const [fileName, setFileName] = useState();
   const [data, setData] = useState([]);
   const posted_by = route.params.email;
   //   const posted_by = "o@g.com"
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("dog");
+  const [gender, setGender] = useState(null);
   const [image, setImage] = useState(null);
   const [imageBG, setImageBG] = useState(null);
-  console.log(imageBG)
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -120,6 +121,8 @@ const PostPet = ({ navigation, route }) => {
         category: category,
         posted_by: posted_by,
         description: description,
+        gender: gender,
+        weight: weight,
       });
       console.log("Document written with ID: ", docRef.id);
       setId(docRef.id); // Set the auto-generated ID
@@ -190,33 +193,64 @@ const PostPet = ({ navigation, route }) => {
           keyboardAppearance="dark"
         />
       </View>
-      <View style={{ justifyContent: "center", alignItems: "center" }}>
-        <Input
-          autoCapitalize="none"
-          value={age}
-          onChangeText={(txt) => setAge(txt)}
-          placeholder="2 years , 3 months"
-          label="Pet Age:"
-          labelStyle={{
-            color: "black",
-            paddingBottom: screenWidth * 0.03,
-            fontSize: 17,
-            fontWeight: "400",
-          }}
-          inputContainerStyle={{
-            borderWidth: 1,
-            borderColor: "black",
-            borderRadius: 5,
-            paddingHorizontal: 10,
-          }}
-          containerStyle={{
-            paddingHorizontal: screenWidth * 0.02,
-            width: screenWidth * 0.9,
-          }}
-          keyboardAppearance="dark"
-        />
+      <View style={{ justifyContent: 'space-around' }}>
+        <View style={{ justifyContent: "center", alignItems: "center", flexDirection: 'row' }}>
+          <Input
+            autoCapitalize="none"
+            value={age}
+            onChangeText={(txt) => setAge(txt)}
+            placeholder="2 years, 3 months"
+            label="Pet Age:"
+            labelStyle={{
+              color: "black",
+              paddingBottom: screenWidth * 0.03,
+              fontSize: 17,
+              fontWeight: "400",
+            }}
+            inputContainerStyle={{
+              borderWidth: 1,
+              borderColor: "black",
+              borderRadius: 5,
+              paddingHorizontal: 10,
+            }}
+            containerStyle={{
+              paddingHorizontal: screenWidth * 0.02,
+              width: screenWidth * 0.45,
+            }}
+            keyboardAppearance="dark"
+          />
+          <Input
+            autoCapitalize="none"
+            value={weight}
+            onChangeText={(txt) => setWeight(txt)}
+            placeholder="5kg"
+            label="Pet Weight:"
+            labelStyle={{
+              color: "black",
+              paddingBottom: screenWidth * 0.03,
+              fontSize: 17,
+              fontWeight: "400",
+            }}
+            inputContainerStyle={{
+              borderWidth: 1,
+              borderColor: "black",
+              borderRadius: 5,
+              paddingHorizontal: 10,
+            }}
+            containerStyle={{
+              paddingHorizontal: screenWidth * 0.02,
+              width: screenWidth * 0.45,
+            }}
+            keyboardAppearance="dark"
+          />
+        </View>
+      </View>
+      <View style={{ justifyContent: 'space-around', flexDirection: 'row' }}>
         <Text style={{ fontSize: screenWidth * 0.04, fontWeight: "bold" }}>
           Pet Category
+        </Text>
+        <Text style={{ fontSize: screenWidth * 0.04, fontWeight: "bold" }}>
+          Gender
         </Text>
       </View>
 
@@ -226,11 +260,22 @@ const PostPet = ({ navigation, route }) => {
           selectedValue={category}
           onValueChange={(item) => setCategory(item)}
           numberOfLines={1}
+          style={{ width: '50%' }}
         >
           <Picker.Item label="dog" value="dog" style={styles.picker} />
           <Picker.Item label="cat" value="cat" style={styles.picker} />
           <Picker.Item label="bird" value="bird" style={styles.picker} />
           <Picker.Item label="monkey" value="monkey" style={styles.picker} />
+        </Picker>
+        <Picker
+          label="gender"
+          selectedValue={gender}
+          onValueChange={(item) => setGender(item)}
+          numberOfLines={1}
+          style={{ width: '50%' }}
+        >
+          <Picker.Item label="male" value="male" style={styles.picker} />
+          <Picker.Item label="female" value="female" style={styles.picker} />
         </Picker>
       </View>
 
@@ -302,6 +347,8 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     margin: 30,
     justifyContent: "center",
+    alignItems: 'center',
+    flexDirection: 'row'
   },
   picker: {
     height: 40,
