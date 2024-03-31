@@ -49,10 +49,9 @@ export default function PetDetails({ navigation, route }) {
     setIsLoading(true)
     const petDoc = doc(db, "pets", item.id);
     await deleteDoc(petDoc);
-    Alert.alert(`Thank you for adopting ${item.name} ❤`, {
-      text: "OK",
-      onPress:() => console.log("OK Pressed"),
-    });
+    Alert.alert(`Thank you for adopting ${item.name} ❤`,
+    "",
+    { text: "OK", onPress:() => console.log("OK Pressed"),});
     setIsLoading(false)
     navigation.navigate("Home");
   };
