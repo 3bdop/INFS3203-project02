@@ -12,13 +12,13 @@ Our project aims to create a mobile application for pet adoption and placement f
 
 - **Add Pet for adoption:** Enables registered breeders and pet owners to list pets for adoption with detailed profiles, including health, breed, and care information.
 - **Adopt a Pet:** Users can browse pets available for adoption, using filters like location, breed, size, etc., to find the right match.
-- **Save a Pet as Favorite:** Allows users to save pet profiles to their favorites for easy access later, aiding the decision-making process.
+- **Edit User Profile:** Allows users to Change their Profile including Name and Avatar.
 
 ## Preliminary Prototype Requirements
 
 - **Home Page:** Features pets for adoption and a quick search bar.
 - **Pet Profiles:** Detailed pages for each pet, including photos, health information, and adoption details.
-- **Favorites:** A section for users to review their saved pets.
+- **User Profile:** A section for users to Edit their Profile.
 - **User Registration:** A straightforward sign-up process for adopters, and those looking to list a pet.
 - **Search and Filter:** Enables users to search for pets by various criteria.
 
