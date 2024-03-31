@@ -12,7 +12,8 @@ import { AntDesign, MaterialIcons } from "react-native-vector-icons";
 
 import { Image, Button, Card, Divider, SearchBar } from "@rneui/themed";
 // import RNFetchBlob from 'react-native-fetch-blob';
-
+import { doc, deleteDoc, addDoc } from "firebase/firestore";
+import { db } from "./config";
 import React, { useEffect, useState } from "react";
 const screenWidth = Dimensions.get("window").width;
 const screenHeight = Dimensions.get("window").height;
@@ -40,7 +41,22 @@ export default function PetDetails({ navigation, route }) {
       []
     )
   );
-  const [isLoading, setIsLoading] = useState(false)
+
+  const { item } = route.params;
+  const [isLoading, setIsLoading] = useState(false);
+
+  const adopt = async () => {
+    setIsLoading(true)
+    const petDoc = doc(db, "pets", item.id);
+    await deleteDoc(petDoc);
+    Alert.alert(`Thank you for adopting ${item.name} ❤`, {
+      text: "OK",
+      onPress:() => console.log("OK Pressed"),
+    });
+    setIsLoading(false)
+    navigation.navigate("Home");
+  };
+
   return (
     <View style={styles.container}>
       <View
@@ -63,7 +79,7 @@ export default function PetDetails({ navigation, route }) {
             height: screenWidth * 0.7,
             borderRadius: 30,
           }}
-          source={{ uri: "" }}
+          source={{ uri: item.image }}
         />
       </View>
       <View
@@ -74,7 +90,7 @@ export default function PetDetails({ navigation, route }) {
         }}
       >
         <Text style={{ fontWeight: "bold", fontSize: screenWidth * 0.06 }}>
-
+          {item.name}
         </Text>
       </View>
       <View
@@ -86,7 +102,7 @@ export default function PetDetails({ navigation, route }) {
       >
         <View style={[styles.cardMiddle, { backgroundColor: "#f8d7b7" }]}>
           <Text style={styles.cardText}>  
-          
+            {item.age}
           </Text>
           <Text style={{ color: "grey" }}>Age</Text>
         </View>
@@ -97,13 +113,13 @@ export default function PetDetails({ navigation, route }) {
           ]}
         >
           <Text style={styles.cardText}>
-            
+            {item.gender.charAt(0).toUpperCase() + item.gender.slice(1)}
           </Text>
           <Text style={{ color: "grey" }}>Gender</Text>
         </View>
         <View style={[styles.cardMiddle, { backgroundColor: "#f7b6be" }]}>
           <Text style={styles.cardText}>
-            
+            {item.weight.includes("kg") ? item.weight : item.weight + "kg"}
           </Text>
           <Text style={{ color: "grey" }}>Weight</Text>
         </View>
@@ -126,7 +142,7 @@ export default function PetDetails({ navigation, route }) {
           About
         </Text>
         <Text style={{ color: "grey", fontSize: screenWidth * 0.04 }}>
-         
+          {item.description}
         </Text>
       </View>
       <View
@@ -138,6 +154,7 @@ export default function PetDetails({ navigation, route }) {
         }}
       >
         <Button
+          onPress={adopt}
           title={
             isLoading ? (
               <ActivityIndicator size="small" color="#fff" />
@@ -180,3 +197,4 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
 });
+
