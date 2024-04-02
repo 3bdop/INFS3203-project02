@@ -15,7 +15,6 @@ import { Input, Button } from '@rneui/themed';
 import { Zocial, MaterialIcons, Feather } from '@expo/vector-icons';
 import {
     createUserWithEmailAndPassword,
-    signInWithEmailAndPassword,
 } from "firebase/auth";
 
 import { auth, db } from "./config";
