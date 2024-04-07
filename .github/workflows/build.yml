@@ -1,4 +1,4 @@
-name: React Native Expo CI
+name: Expo EAS CI
 
 on:
   push:
@@ -6,35 +6,34 @@ on:
       - main
 
 jobs:
-  expo-publish:
+  build-and-update:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - name: Setup Node.js
-      uses: actions/setup-node@v2
-      with:
-        node-version: '16'
+      - uses: actions/checkout@v2
 
-    - name: Install Dependencies
-      run: |
-        echo "Installing project dependencies..."
-        npm install
-        echo "Installing Expo CLI globally..."
-        npm install -g expo-cli
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'
 
-    - name: Install expo-updates
-      run: |
-        echo "Ensuring expo-updates is installed..."
-        npm install expo-updates
+      - name: Install Dependencies
+        run: npm install
 
-    - name: Login to Expo
-      run: |
-        echo "Logging in to Expo..."
-        expo login --non-interactive -u ${{ secrets.EXPO_CLI_USERNAME }} -p ${{ secrets.EXPO_CLI_PASSWORD }}
+      - name: Install EAS CLI
+        run: npm install -g eas-cli
 
-    - name: Publish to Expo
-      run: |
-        echo "Publishing project to Expo..."
-        expo publish
-      env:
-        CI: true
+      - name: EAS Login
+        run: eas login --non-interactive
+        env:
+          EAS_TOKEN: ${{ secrets.EAS_TOKEN }}
+
+      - name: Build App (EAS Build)
+        run: eas build --platform all --non-interactive
+        env:
+          EAS_TOKEN: ${{ secrets.EAS_TOKEN }}
+
+      - name: Publish Update (EAS Update)
+        run: eas update --branch main --non-interactive
+        env:
+          EAS_TOKEN: ${{ secrets.EAS_TOKEN }}
+
