@@ -1,10 +1,10 @@
 {
   "expo": {
-    "name": "pets-app",
+    "name": "pets app",
     "slug": "pets-app",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/Aplication_icon.png",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/logo.png",
