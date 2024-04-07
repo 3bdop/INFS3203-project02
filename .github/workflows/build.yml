@@ -22,12 +22,15 @@ jobs:
         echo "Installing Expo CLI globally..."
         npm install -g expo-cli
 
+    - name: Install expo-updates
+      run: |
+        echo "Ensuring expo-updates is installed..."
+        npm install expo-updates
+
     - name: Login to Expo
       run: |
         echo "Logging in to Expo..."
         expo login --non-interactive -u ${{ secrets.EXPO_CLI_USERNAME }} -p ${{ secrets.EXPO_CLI_PASSWORD }}
-      env:
-        EXPO_CLI_PASSWORD: ${{ secrets.EXPO_CLI_PASSWORD }}
 
     - name: Publish to Expo
       run: |
