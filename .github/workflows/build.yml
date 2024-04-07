@@ -6,33 +6,32 @@ on:
       - main
 
 jobs:
-  build:
+  expo-publish:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [16.x]
-
     steps:
-    - uses: actions/checkout@v3
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3
+    - uses: actions/checkout@v2
+    - name: Setup Node.js
+      uses: actions/setup-node@v2
       with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'npm'
+        node-version: '16'
 
     - name: Install Dependencies
       run: |
+        echo "Installing project dependencies..."
         npm install
-        npm install -g eas-cli
-        npm install expo-cli@latest --save-dev  # Installs the latest local Expo CLI
+        echo "Installing Expo CLI globally..."
+        npm install -g expo-cli
 
-    - name: Echo Build Start
-      run: echo "Starting the Expo build process for Android and iOS."
-
-    - name: Build Expo App (EAS Build)
+    - name: Login to Expo
       run: |
-        npx eas build --platform android --profile preview
-        npx eas build --platform ios --profile preview
+        echo "Logging in to Expo..."
+        expo login --non-interactive -u ${{ secrets.EXPO_CLI_USERNAME }} -p ${{ secrets.EXPO_CLI_PASSWORD }}
+      env:
+        EXPO_CLI_PASSWORD: ${{ secrets.EXPO_CLI_PASSWORD }}
+
+    - name: Publish to Expo
+      run: |
+        echo "Publishing project to Expo..."
+        expo publish
       env:
         CI: true
-        EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
