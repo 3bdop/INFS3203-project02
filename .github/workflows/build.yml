@@ -13,25 +13,26 @@ jobs:
         node-version: [16.x]
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
+      uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
+        cache: 'npm'
 
     - name: Install Dependencies
       run: |
         npm install
-        npm install -g expo-cli
-        npm install expo-cli@latest --save-dev
+        npm install -g eas-cli
+        npm install expo-cli@latest --save-dev  # Installs the latest local Expo CLI
 
     - name: Echo Build Start
       run: echo "Starting the Expo build process for Android and iOS."
 
     - name: Build Expo App (EAS Build)
       run: |
-        expo login -u ${{ secrets.EXPO_CLI_USERNAME }} -p ${{ secrets.EXPO_CLI_PASSWORD }}
-        eas build --platform android --profile preview
-        eas build --platform ios --profile preview
+        npx eas build --platform android --profile preview
+        npx eas build --platform ios --profile preview
       env:
         CI: true
+        EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
