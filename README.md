@@ -11,8 +11,8 @@ Our project aims to create a mobile application for pet adoption and placement f
 ## Functional Features
 
 - **Add Pet for adoption:** Enables registered breeders and pet owners to list pets for adoption with detailed profiles, including health, breed, and care information.
-- **Adopt a Pet:** Users can browse pets available for adoption, using filters like location, breed, size, etc., to find the right match.
-- **Edit User Profile:** Allows users to Change their Profile including Name and Avatar.
+- **Adopt a Pet:** Users can browse pets available for adoption, using filters like breed, name, age, etc., to find the right match.
+- **Edit User Profile:** Users can Change their Profile information including Name and Avatar.
 
 ## Preliminary Prototype Requirements
 
