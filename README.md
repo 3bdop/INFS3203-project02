@@ -1,4 +1,4 @@
-# Pet Adoption Application Project Plan
+# Pet Adoption Application Project Plan & installation guide
 
 Our project aims to create a mobile application for pet adoption and placement for adoption, aligning with Qatar's National Development Strategy (NDS) goals to improve the quality of life. This is achieved by recognizing the significant impact pets have on physical and mental health. The application positions itself not just as a pet adoption platform but as a component of a comprehensive wellness strategy.
 
