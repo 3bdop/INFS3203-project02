@@ -1,0 +1,36 @@
+name: React Native Expo CI
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [18.17.1]
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+
+    - name: Install Dependencies
+      run: |
+        npm install -g expo-cli
+        npm install
+
+    - name: Echo Build Start
+      run: echo "Starting the Expo build process for Android and iOS."
+
+    - name: Build Expo App (EAS Build)
+      run: |
+        expo login -u ${{ secrets.EXPO_CLI_USERNAME }} -p ${{ secrets.EXPO_CLI_PASSWORD }}
+        expo build:android
+        expo build:ios
+      env:
+        CI: true
