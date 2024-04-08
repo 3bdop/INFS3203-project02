@@ -11,30 +11,49 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
+        # Echo statements are not directly added to steps using 'uses'
+
+      # Adding a step for echoing after checking out the repository
+      - name: Echo after Checkout
+        run: echo "Repository checked out successfully."
 
       - name: Setup Node.js
         uses: actions/setup-node@v2
         with:
           node-version: 18.x
+      # Echoing after setting up Node.js
+      - name: Echo after Setup Node.js
+        run: echo "Node.js version 18.x setup complete."
 
       - name: Expo GitHub Action
         uses: expo/expo-github-action@8.1.0
+      # Echoing after setting up Expo GitHub Action
+      - name: Echo after Expo GitHub Action
+        run: echo "Expo GitHub Action setup complete."
 
       - name: Install Expo CLI
-        run: npm install -g expo-cli
+        run: |
+          echo "Installing Expo CLI globally..."
+          npm install -g expo-cli
 
       - name: Install EAS CLI
-        run: npm install -g eas-cli
+        run: |
+          echo "Installing EAS CLI globally..."
+          npm install -g eas-cli
 
       - name: Install Dependencies
-        run: npm install
+        run: |
+          echo "Installing project dependencies..."
+          npm install
 
       - name: Build App (EAS Build)
         run: |
+          echo "Checking for EXPO_TOKEN..."
           if [ -z "${{ secrets.EXPO_TOKEN }}" ]; then
-            echo "You must provide an EXPO_TOKEN secret linked to this project's Expo account in this repo's secrets. Learn more: https://docs.expo.dev/eas-update/github-actions"
+            echo "EXPO_TOKEN secret is missing. You must provide an EXPO_TOKEN secret linked to this project's Expo account in this repo's secrets. Learn more: https://docs.expo.dev/eas-update/github-actions"
             exit 1
           fi
+          echo "Starting the app build process with EAS Build..."
           expo build
         env:
           EAS_TOKEN: ${{ secrets.EXPO_TOKEN }}
