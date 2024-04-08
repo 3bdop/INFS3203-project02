@@ -19,31 +19,20 @@ jobs:
 
       - name: Expo GitHub Action
         uses: expo/expo-github-action@8.1.0
-
-      - name: Install Expo CLI
-        run: npm install -g expo-cli
-
-      - name: Install EAS CLI
-        run: npm install -g eas-cli
+        with:
+          expo-version: 5.x
+          eas-version: latest
+          expo-token: ${{ secrets.EXPO_TOKEN }}
 
       - name: Install Dependencies
         run: npm install
 
       - name: Build App (EAS Build)
-        run: |
-          if [ -z "${{ secrets.EXPO_TOKEN }}" ]; then
-            echo "You must provide an EXPO_TOKEN secret linked to this project's Expo account in this repo's secrets. Learn more: https://docs.expo.dev/eas-update/github-actions"
-            exit 1
-          fi
-          expo build
+        run: eas build --platform all --non-interactive
+        env:
+          EAS_TOKEN: ${{ secrets.EXPO_TOKEN }}
 
       - name: Publish Update (EAS Update)
-        run: |
-          if [ -z "${{ secrets.EXPO_TOKEN }}" ]; then
-            echo "You must provide an EXPO_TOKEN secret linked to this project's Expo account in this repo's secrets. Learn more: https://docs.expo.dev/eas-update/github-actions"
-            exit 1
-          fi
-          eas update --branch main --message "Updated succefully!" --non-interactive
-          
+        run: eas update --branch main --message "Updated With a new feature!" --non-interactive
         env:
           EAS_TOKEN: ${{ secrets.EXPO_TOKEN }}
