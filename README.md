@@ -1,4 +1,4 @@
-# Pet Adoption Application Project Plan
+# Pet Adoption Application Project Plan & installation guide
 
 Our project aims to create a mobile application for pet adoption and placement for adoption, aligning with Qatar's National Development Strategy (NDS) goals to improve the quality of life. This is achieved by recognizing the significant impact pets have on physical and mental health. The application positions itself not just as a pet adoption platform but as a component of a comprehensive wellness strategy.
 
@@ -11,8 +11,8 @@ Our project aims to create a mobile application for pet adoption and placement f
 ## Functional Features
 
 - **Add Pet for adoption:** Enables registered breeders and pet owners to list pets for adoption with detailed profiles, including health, breed, and care information.
-- **Adopt a Pet:** Users can browse pets available for adoption, using filters like location, breed, size, etc., to find the right match.
-- **Edit User Profile:** Allows users to Change their Profile including Name and Avatar.
+- **Adopt a Pet:** Users can browse pets available for adoption, using filters like breed, name, age, etc., to find the right match.
+- **Edit User Profile:** Users can Change their Profile information including Name and Avatar.
 
 ## Preliminary Prototype Requirements
 
@@ -44,4 +44,74 @@ By adhering to this project plan and focusing on the identified societal need, o
 
 ## Prototype
 ![image](https://github.com/3bdop/INFS3203-project02/assets/158258229/d625336d-d1eb-41eb-97a3-3cc7228f95e3)
+
+
+# How to run the application
+
+## Prerequisites
+Before you begin, ensure you meet the following requirements:
+- [Node.js](https://nodejs.org/en/) (LTS version recommended)
+- npm (comes installed with Node.js) or [Yarn](https://yarnpkg.com/)
+- [Git](https://git-scm.com/)
+- [Expo CLI](https://docs.expo.dev/get-started/installation/)
+  
+  You can install Expo CLI by running:
+  ```
+  npm install -g expo-cli
+  ```
+  
+## Installation
+
+To install the project, follow these steps:
+
+1. Clone the repository:
+   
+   ```
+   git clone https://github.com/3bdop/INFS3203-project02.git
+   ```
+3. Navigate to the project directory:
+   
+   ```
+   cd your-project-name
+   ```
+3. Install dependencies:
+   
+- Using npm:
+  ```
+  npm install
+  ```
+
+- Using Yarn:
+  ```
+  yarn install
+  ```
+
+## Running the Application
+
+To run the application on your local machine, follow these steps:
+
+1. Start the Expo developer server:
+   
+- Using npm:
+  
+  ```
+  npm start
+  ```
+- Using Yarn:
+  
+  ```
+  yarn start
+  ```
+2. Expo CLI will start Metro Bundler, which is a JavaScript bundler that compiles your app’s code and assets. Once it's ready, you'll see a QR code in the terminal.
+
+3. To run the app on your mobile device, download the [Expo Go](https://expo.dev/client) app from the App Store (iOS) or Google Play (Android). Scan the QR code with your device to open your project.
+
+4. To run the app on a simulator/emulator:
+- **iOS Simulator** (Mac only):
+  Press `i` in the terminal running your project.
+- **Android Emulator**:
+  Press `a` in the terminal running your project.
+
+
+
 
