@@ -43,6 +43,7 @@ jobs:
             echo "You must provide an EXPO_TOKEN secret linked to this project's Expo account in this repo's secrets. Learn more: https://docs.expo.dev/eas-update/github-actions"
             exit 1
           fi
-          eas update --branch main --non-interactive
+          eas update --branch main --message "Updated succefully!" --non-interactive
+          
         env:
           EAS_TOKEN: ${{ secrets.EXPO_TOKEN }}
