@@ -18,16 +18,26 @@ jobs:
           node-version: 18.x
 
       - name: Install Expo CLI
-        run: npm install -g expo-cli
+        run: npm install -g eas-cli
 
       - name: Install Dependencies
         run: npm install
 
       - name: Build Expo App
-        run: expo build:ios
+        run: |
+          if [ -z "${{ secrets.EXPO_TOKEN }}" ]; then
+            echo "You must provide an EXPO_TOKEN secret linked to this project's Expo account in this repo's secrets. Learn more: https://docs.expo.dev/eas-update/github-actions"
+            exit 1
+          fi
+          eas build -p ios --non-interactive
 
       - name: Publish Expo App to Expo Go
-        run: expo publish --release-channel default --non-interactive
+        run: |
+          if [ -z "${{ secrets.EXPO_TOKEN }}" ]; then
+            echo "You must provide an EXPO_TOKEN secret linked to this project's Expo account in this repo's secrets. Learn more: https://docs.expo.dev/eas-update/github-actions"
+            exit 1
+          fi
+          eas publish --non-interactive
         env:
           EXPO_CLI_USERNAME: ${{ secrets.EXPO_CLI_USERNAME }}
           EXPO_CLI_PASSWORD: ${{ secrets.EXPO_CLI_PASSWORD }}
