@@ -14,7 +14,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '16'
+          node-version: '18x'
 
       - name: Install Dependencies
         run: npm install
@@ -25,10 +25,10 @@ jobs:
       - name: Build App (EAS Build)
         run: eas build --platform all --non-interactive
         env:
-          EAS_TOKEN: ${{ secrets.EAS_TOKEN }}
+          EAS_TOKEN: ${{ secrets.EXPO_TOKEN }}
 
       - name: Publish Update (EAS Update)
         run: eas update --branch main --non-interactive
         env:
-          EAS_TOKEN: ${{ secrets.EAS_TOKEN }}
+          EAS_TOKEN: ${{ secrets.EXPO_TOKEN }}
 
