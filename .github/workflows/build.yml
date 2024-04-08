@@ -18,7 +18,7 @@ jobs:
           node-version: 18.x
 
       - name: Expo GitHub Action
-        uses: expo/expo-github-action@8
+        uses: expo/expo-github-action@8.1.0
 
       - name: Install Expo CLI
         run: npm install -g expo-cli
