@@ -9,26 +9,40 @@ jobs:
   build-and-update:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout Repository
+        uses: actions/checkout@v2
 
       - name: Setup Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '18.17.1'
+          node-version: 18.x
 
-      - name: Install Dependencies
-        run: npm install
+      - name: Expo GitHub Action
+        uses: expo/expo-github-action@8
+
+      - name: Install Expo CLI
+        run: npm install -g expo-cli
 
       - name: Install EAS CLI
         run: npm install -g eas-cli
 
+      - name: Install Dependencies
+        run: npm install
+
       - name: Build App (EAS Build)
-        run: eas build --platform all --non-interactive
-        env:
-          EAS_TOKEN: ${{ secrets.EXPO_TOKEN }}
+        run: |
+          if [ -z "${{ secrets.EXPO_TOKEN }}" ]; then
+            echo "You must provide an EXPO_TOKEN secret linked to this project's Expo account in this repo's secrets. Learn more: https://docs.expo.dev/eas-update/github-actions"
+            exit 1
+          fi
+          expo build
 
       - name: Publish Update (EAS Update)
-        run: eas update --branch main --non-interactive
+        run: |
+          if [ -z "${{ secrets.EXPO_TOKEN }}" ]; then
+            echo "You must provide an EXPO_TOKEN secret linked to this project's Expo account in this repo's secrets. Learn more: https://docs.expo.dev/eas-update/github-actions"
+            exit 1
+          fi
+          eas update --branch main --non-interactive
         env:
           EAS_TOKEN: ${{ secrets.EXPO_TOKEN }}
-
