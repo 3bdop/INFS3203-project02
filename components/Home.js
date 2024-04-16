@@ -95,27 +95,27 @@ export default function HomeScreen({ navigation, route }) {
     return () => unsubscribe();
   }, []);
 
-  // useEffect(() => {
-  //   const docRef = doc(db, "users", email);
+  useEffect(() => {
+    const docRef = doc(db, "users", email);
 
-  //   const unsubscribe = onSnapshot(
-  //     docRef,
-  //     (doc) => {
-  //       if (doc.exists()) {
-  //         console.log("Current data:", doc.data());
-  //         setUserData(doc.data());
-  //       } else {
-  //         console.log("No such document!");
-  //       }
-  //     },
-  //     (error) => {
-  //       console.log("Error getting document:", error);
-  //     }
-  //   );
+    const unsubscribe = onSnapshot(
+      docRef,
+      (doc) => {
+        if (doc.exists()) {
+          console.log("Current data:", doc.data());
+          setUserData(doc.data());
+        } else {
+          console.log("No such document!");
+        }
+      },
+      (error) => {
+        console.log("Error getting document:", error);
+      }
+    );
 
-  //   // Cleanup the listener when the component unmounts
-  //   return () => unsubscribe();
-  // }, [email]); // Dependency array to re-run if email changes
+    // Cleanup the listener when the component unmounts
+    return () => unsubscribe();
+  }, [email]); // Dependency array to re-run if email changes
 
   // useEffect(() => {
   //   const fetchPetsWithOwners = async () => {
