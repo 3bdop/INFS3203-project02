@@ -97,6 +97,12 @@ To run the application on your local machine, follow these steps:
   ```
   npm start
   ```
+  
+- Using expo:
+  
+  ```
+  npx expo start
+  ```
 - Using Yarn:
   
   ```
