@@ -52,7 +52,7 @@ By adhering to this project plan and focusing on the identified societal need, o
 Before you begin, ensure you meet the following requirements:
 - [Node.js](https://nodejs.org/en/) (LTS version recommended)
 - npm (comes installed with Node.js) or [Yarn](https://yarnpkg.com/)
-- [Git](https://git-scm.com/)
+- Optinal: [Git](https://git-scm.com/)
 - [Expo CLI](https://docs.expo.dev/get-started/installation/)
   
   You can install Expo CLI by running:
@@ -63,6 +63,8 @@ Before you begin, ensure you meet the following requirements:
 ## Installation
 
 To install the project, follow these steps:
+
+**Note:** Cloning the repository is optional, you can clone it or download the app zip folder from the code tab in the home screen.
 
 1. Clone the repository:
    
