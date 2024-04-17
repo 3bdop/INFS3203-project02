@@ -53,13 +53,14 @@ Before you begin, ensure you meet the following requirements:
 - [Node.js](https://nodejs.org/en/) (LTS version recommended)
 - npm (comes installed with Node.js) or [Yarn](https://yarnpkg.com/)
 - Optinal: [Git](https://git-scm.com/)
-- [Expo CLI](https://docs.expo.dev/get-started/installation/)
-  
-  You can install Expo CLI by running:
+- [Expo CLI](https://docs.expo.dev/get-started/installation/) 
   ```
   npm install -g expo-cli
   ```
-  
+- For Mac users: Install Xcode to run and install the iPhone simulator.
+- For Windows Users: Install Android Studio and set up the Android Emulator SDK.
+
+
 ## Installation
 
 To install the project, follow these steps:
@@ -92,7 +93,9 @@ To install the project, follow these steps:
 
 To run the application on your local machine, follow these steps:
 
-1. Start the Expo developer server:
+1. Open Xcode/android stodio and start the Simulator/Emulator
+   
+2. Start the Expo developer server:
    
 - Using npm:
   
@@ -100,26 +103,30 @@ To run the application on your local machine, follow these steps:
   npm start
   ```
   
-- Using expo:
+- Or Using expo:
   
   ```
   npx expo start
   ```
-- Using Yarn:
+- Or Using Yarn:
   
   ```
   yarn start
   ```
-2. Expo CLI will start Metro Bundler, which is a JavaScript bundler that compiles your app’s code and assets. Once it's ready, you'll see a QR code in the terminal.
+
+3. Expo CLI will start Metro Bundler, which is a JavaScript bundler that compiles your app’s code and assets. Once it's ready, you'll see a QR code in the terminal.
 
 3. To run the app on your mobile device, download the [Expo Go](https://expo.dev/client) app from the App Store (iOS) or Google Play (Android). Scan the QR code with your device to open your project.
 
-4. To run the app on a simulator/emulator:
+4. To run the app on a Simulator/Emulator:
 - **iOS Simulator** (Mac only):
   Press `i` in the terminal running your project.
 - **Android Emulator**:
   Press `a` in the terminal running your project.
 
+5. **Note:** When You run the app it will ask for a username and a password in the termenal, type the following username and password and hit enter:
+   - Username: petpal
+   - Password: PetPal123
 
 
 
